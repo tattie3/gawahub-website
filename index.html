@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Professor Tats Physics & Chemistry Hub</title>
+<title>Gawa Hub - Physics & Chemistry Complete</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Space+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -17,8 +17,6 @@
     --glow-teal: 0 0 30px rgba(0,212,170,0.5);
     --glow-orange-xl: 0 0 60px rgba(255,107,53,0.6);
     --glow-teal-xl: 0 0 60px rgba(0,212,170,0.6);
-    --glow-purple: 0 0 40px rgba(167,51,255,0.5);
-    --glow-pink: 0 0 40px rgba(255,51,167,0.5);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -137,7 +135,6 @@
   }
   @keyframes loadBar { to { width: 100%; } }
 
-  /* ─── MAIN ──────────────────────────────────── */
   #main {
     opacity: 0;
     animation: mainAppear 1s ease forwards;
@@ -145,7 +142,6 @@
   }
   @keyframes mainAppear { to { opacity: 1; } }
 
-  /* ─── PARTICLES BG ───────────────────────────── */
   #bg-canvas {
     position: fixed; inset: 0;
     pointer-events: none;
@@ -153,7 +149,6 @@
     opacity: 0.4;
   }
 
-  /* ─── HEADER ────────────────────────────────── */
   header {
     position: relative;
     z-index: 10;
@@ -202,7 +197,6 @@
     letter-spacing: 1px;
   }
 
-  /* ─── NAV ───────────────────────────────────── */
   nav {
     position: sticky;
     top: 0;
@@ -261,7 +255,6 @@
     box-shadow: 0 0 20px rgba(0,212,170,0.5);
   }
 
-  /* ─── STATS STRIP ────────────────────────────── */
   .stats-strip {
     display: flex;
     justify-content: center;
@@ -315,7 +308,6 @@
     margin-top: 0.4rem;
   }
 
-  /* ─── SECTION TITLE ──────────────────────────── */
   .section-title {
     text-align: center;
     padding: 2rem 2rem 1rem;
@@ -367,7 +359,6 @@
     margin-top: 1rem;
   }
 
-  /* ─── MAIN CARDS ─────────────────────────────── */
   .cards-grid {
     display: flex;
     justify-content: center;
@@ -573,7 +564,6 @@
     transform: translateX(100%);
   }
 
-  /* ─── QUICK QUIZ ──────────────────────────────── */
   .quiz-section {
     max-width: 700px;
     margin: 2rem auto 3rem;
@@ -736,7 +726,6 @@
     font-size: 0.85rem;
   }
 
-  /* ─── FORMULA CARDS ──────────────────────────── */
   .formula-section {
     max-width: 900px;
     margin: 2rem auto 3rem;
@@ -828,7 +817,27 @@
     font-weight: 600;
   }
 
-  /* ─── DARK MODE TOGGLE ────────────────────────── */
+  .content-section {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .content-section h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: var(--teal);
+    margin-bottom: 1rem;
+  }
+
+  .content-section p {
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
   .toggle-wrap {
     position: fixed;
     bottom: 2rem;
@@ -873,7 +882,6 @@
     opacity: 1;
   }
 
-  /* ─── FOOTER ────────────────────────────────── */
   footer {
     text-align: center;
     padding: 3rem 2rem;
@@ -897,7 +905,6 @@
     50% { color: var(--teal); }
   }
 
-  /* ─── LIGHT MODE ─────────────────────────────── */
   body.light {
     --navy: #f0f4ff;
     --card-bg: #ffffff;
@@ -910,7 +917,6 @@
     border-bottom-color: rgba(0,0,0,0.08);
   }
 
-  /* ─── RESPONSIVE ────────────────────────────── */
   @media (max-width: 600px) {
     .quiz-options { grid-template-columns: 1fr; }
     .stats-strip { gap: 1.5rem; }
@@ -919,63 +925,60 @@
 </head>
 <body>
 
-<!-- ─── INTRO ──────────────────── -->
 <div id="intro">
   <canvas id="intro-canvas"></canvas>
   <div class="intro-title">
     <span>Welcome&nbsp;</span>
     <span>to&nbsp;</span>
-    <span>Tats&nbsp;</span>
+    <span>Gawa&nbsp;</span>
     <span>Hub</span>
   </div>
-  <p class="intro-sub">Physics &amp; Chemistry Revision</p>
+  <p class="intro-sub">Complete Science Revision</p>
   <div class="intro-loader"><div class="intro-loader-bar"></div></div>
 </div>
 
-<!-- ─── BACKGROUND PARTICLES ────── -->
 <canvas id="bg-canvas"></canvas>
 
-<!-- ─── MAIN CONTENT ─────────────── -->
 <div id="main">
-
   <header>
-    <div class="header-badge">🎓 Revision Hub</div>
-    <h1>Professor Tats<br>Physics &amp; Chemistry</h1>
-    <p>Your go-to science revision companion</p>
+    <div class="header-badge">🚀 Complete Hub</div>
+    <h1>Gawa Hub<br>Physics & Chemistry</h1>
+    <p>Your complete science revision companion</p>
   </header>
 
   <nav>
-    <a href="the%20gawa%20%20school%20hub.html">🏠 Home</a>
-    <a href="#subjects" class="active">📚 </a>
-	  <a class="active" href="more%20of%20about.html">VIDEOS </a>&nbsp;<a href="#quiz">🧠 Quiz</a> <a href="the%20gawa%20%20school%20hub.html">🔬</a>Papers&nbsp;
-	  <a href="about.html">ℹ️ About</a>
-    <a href="contact.html">📬 Contact</a>
+    <a href="#home" onclick="setActive(this)">🏠 Home</a>
+    <a href="#chemistry" onclick="setActive(this)">⚗️ Chemistry</a>
+    <a href="#physics" onclick="setActive(this)">⚡ Physics</a>
+    <a href="#quiz" onclick="setActive(this)">🧠 Quiz</a>
+    <a href="#formulas" onclick="setActive(this)">🔬 Formulas</a>
+    <a href="#about" onclick="setActive(this)">ℹ️ About</a>
+    <a href="#contact" onclick="setActive(this)">📬 Contact</a>
   </nav>
 
-  <!-- STATS -->
   <div class="stats-strip">
     <div class="stat-item">
       <div class="stat-num" id="cnt1">0</div>
-      <div class="stat-label">Topics Covered</div>
+      <div class="stat-label">Topics</div>
     </div>
     <div class="stat-item">
       <div class="stat-num" id="cnt2">0</div>
-      <div class="stat-label">Quiz Questions</div>
+      <div class="stat-label">Questions</div>
     </div>
     <div class="stat-item">
       <div class="stat-num" id="cnt3">0</div>
-      <div class="stat-label">Key Formulas</div>
+      <div class="stat-label">Formulas</div>
     </div>
     <div class="stat-item">
       <div class="stat-num" id="cnt4">0</div>
-      <div class="stat-label">Students Helped</div>
+      <div class="stat-label">Students</div>
     </div>
   </div>
 
-  <!-- SUBJECTS -->
-  <div class="section-title" id="subjects">
+  <!-- HOME SECTION -->
+  <div id="home" class="section-title">
     <h2>Choose Your Subject</h2>
-    <p>Pick a subject to start your revision session</p>
+    <p>Pick a subject to start your revision</p>
   </div>
 
   <div class="cards-grid">
@@ -984,14 +987,14 @@
       <div class="card-body">
         <div class="card-tag">Chemistry</div>
         <h2>Chemistry</h2>
-        <p>From atoms to reactions — master the building blocks of matter.</p>
+        <p>Master the building blocks of matter.</p>
         <ul class="topic-list">
           <li>Atomic Structure</li>
           <li>Chemical Bonding</li>
           <li>Acids & Bases</li>
           <li>Organic Chemistry</li>
         </ul>
-        <a href="the%20chemistry%20.html" class="card-btn">Start Chemistry →</a>
+        <a href="#chemistry" class="card-btn">Learn Chemistry →</a>
       </div>
     </div>
 
@@ -1000,22 +1003,54 @@
       <div class="card-body">
         <div class="card-tag">Physics</div>
         <h2>Physics</h2>
-        <p>Discover the laws that govern forces, energy, and the universe.</p>
+        <p>Discover forces, energy, and the universe.</p>
         <ul class="topic-list">
           <li>Newton's Laws</li>
           <li>Electricity & Magnetism</li>
           <li>Waves & Light</li>
           <li>Thermodynamics</li>
         </ul>
-        <a href="phsics.html" class="card-btn">Start Physics →</a>
+        <a href="#physics" class="card-btn">Learn Physics →</a>
       </div>
     </div>
   </div>
 
-  <!-- QUIZ -->
-  <div class="section-title" id="quiz">
+  <!-- CHEMISTRY SECTION -->
+  <div id="chemistry" class="section-title">
+    <h2>⚗️ Chemistry</h2>
+    <p>Complete chemistry revision guide</p>
+  </div>
+
+  <div class="content-section">
+    <h3>🔬 Topics Covered</h3>
+    <p><strong>Atomic Structure:</strong> Learn about electrons, protons, neutrons, and atomic models. Understand electron configurations and their properties.</p>
+    <p><strong>Chemical Bonding:</strong> Master ionic, covalent, and metallic bonds. Understand electronegativity and bond polarity.</p>
+    <p><strong>Acids & Bases:</strong> pH scale, neutralization reactions, buffers, and titration techniques.</p>
+    <p><strong>Organic Chemistry:</strong> Hydrocarbons, functional groups, isomerism, and reaction mechanisms.</p>
+    <p><strong>Thermochemistry:</strong> Enthalpy, entropy, Gibbs free energy, and equilibrium constants.</p>
+    <p><strong>Periodic Table:</strong> Trends in atomic radius, ionization energy, electronegativity, and oxidation states.</p>
+  </div>
+
+  <!-- PHYSICS SECTION -->
+  <div id="physics" class="section-title">
+    <h2>⚡ Physics</h2>
+    <p>Complete physics revision guide</p>
+  </div>
+
+  <div class="content-section">
+    <h3>🌍 Topics Covered</h3>
+    <p><strong>Newton's Laws:</strong> First, second, and third laws of motion. Force, mass, acceleration relationships.</p>
+    <p><strong>Energy:</strong> Kinetic and potential energy, work-energy theorem, conservation of energy.</p>
+    <p><strong>Waves:</strong> Transverse and longitudinal waves, frequency, wavelength, wave equation, interference, diffraction.</p>
+    <p><strong>Electricity:</strong> Electric charge, current, voltage, resistance, Ohm's law, circuits, and magnetism.</p>
+    <p><strong>Light:</strong> Reflection, refraction, lenses, mirrors, spectrum, and electromagnetic waves.</p>
+    <p><strong>Thermodynamics:</strong> Heat, temperature, specific heat capacity, states of matter, and gas laws.</p>
+  </div>
+
+  <!-- QUIZ SECTION -->
+  <div id="quiz" class="section-title">
     <h2>⚡ Quick Quiz</h2>
-    <p>Test your knowledge — a new question every round</p>
+    <p>Test your knowledge</p>
   </div>
 
   <div class="quiz-section">
@@ -1034,28 +1069,60 @@
     </div>
   </div>
 
-  <!-- FORMULAS -->
-  <div class="section-title" id="formulas">
+  <!-- FORMULAS SECTION -->
+  <div id="formulas" class="section-title">
     <h2>🔬 Key Formulas</h2>
-    <p>Swipe through essential equations</p>
+    <p>Essential equations you need to know</p>
   </div>
 
   <div class="formula-section">
     <div class="formula-scroll" id="formulaScroll"></div>
   </div>
 
+  <!-- ABOUT SECTION -->
+  <div id="about" class="section-title">
+    <h2>ℹ️ About Gawa Hub</h2>
+    <p>Your science revision partner</p>
+  </div>
+
+  <div class="content-section">
+    <h3>📚 What is Gawa Hub?</h3>
+    <p>Gawa Hub is your complete companion for IGCSE Physics and Chemistry revision. We provide comprehensive notes, practice questions, interactive quizzes, and essential formulas all in one place.</p>
+    <p><strong>Our Mission:</strong> To make science revision accessible, engaging, and effective for every student. Whether you're preparing for exams or deepening your understanding, we're here to help.</p>
+    <p><strong>Features:</strong></p>
+    <p>✅ Complete topic coverage from official syllabus<br>
+    ✅ Interactive quiz engine with instant feedback<br>
+    ✅ Essential formulas with explanations<br>
+    ✅ Clean, dark-themed interface for easy studying<br>
+    ✅ Mobile-friendly responsive design<br>
+    ✅ Free and accessible to all students</p>
+  </div>
+
+  <!-- CONTACT SECTION -->
+  <div id="contact" class="section-title">
+    <h2>📬 Contact Us</h2>
+    <p>Have questions? Get in touch!</p>
+  </div>
+
+  <div class="content-section">
+    <h3>📧 Get in Touch</h3>
+    <p><strong>Email:</strong> hello@gawahub.com</p>
+    <p><strong>Questions about content?</strong> We're always improving our materials based on student feedback.</p>
+    <p><strong>Found an error?</strong> Help us improve by reporting issues.</p>
+    <p><strong>Need clarification on a topic?</strong> Reach out and we'll help explain it better.</p>
+    <p style="margin-top: 2rem; color: var(--muted);">© 2026 Gawa Hub • Complete Science Revision Platform</p>
+  </div>
+
   <footer>
-    © 2026 <span>Professor Tats Hub</span> &nbsp;·&nbsp; Made with ❤️ for curious minds
+    © 2026 <span>Gawa Hub</span> &nbsp;·&nbsp; Made with ❤️ for curious minds
   </footer>
 </div>
 
-<!-- Theme Toggle -->
 <div class="toggle-wrap">
   <button id="themeBtn" title="Toggle theme">🌙</button>
 </div>
 
 <script>
-// ─── INTRO PARTICLE CANVAS ───────────────────
 const introCanvas = document.getElementById('intro-canvas');
 const ictx = introCanvas.getContext('2d');
 introCanvas.width = window.innerWidth;
@@ -1083,7 +1150,6 @@ function drawIntro() {
 }
 drawIntro();
 
-// ─── BG PARTICLE CANVAS ──────────────────────
 const bgCanvas = document.getElementById('bg-canvas');
 const bctx = bgCanvas.getContext('2d');
 bgCanvas.width = window.innerWidth;
@@ -1111,7 +1177,6 @@ function drawBg() {
   bctx.globalCompositeOperation = 'lighter';
   
   bgParts.forEach((p, i) => {
-    // Draw particle with glow
     const gradient = bctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2);
     gradient.addColorStop(0, p.color.replace(')', `, ${p.opacity})`).replace('rgba', 'rgba'));
     gradient.addColorStop(1, p.color.replace(')', ', 0)'));
@@ -1121,7 +1186,6 @@ function drawBg() {
     bctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
     bctx.fill();
     
-    // Mouse attraction
     const dx = mouseX - p.x;
     const dy = mouseY - p.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1154,7 +1218,6 @@ window.addEventListener('resize', () => {
   bgCanvas.height = introCanvas.height = window.innerHeight;
 });
 
-// ─── COUNTER ANIMATION ───────────────────────
 function animCounter(el, target, duration) {
   let start = null;
   function step(ts) {
@@ -1173,7 +1236,6 @@ setTimeout(() => {
   animCounter(document.getElementById('cnt4'), 500, 1800);
 }, 7000);
 
-// ─── QUIZ ENGINE ─────────────────────────────
 const questions = [
   { q: "What is the chemical symbol for Gold?", opts: ["Go","Au","Gd","Ag"], ans: 1, subj: "⚗️ Chemistry" },
   { q: "What is the unit of electric current?", opts: ["Volt","Ohm","Ampere","Watt"], ans: 2, subj: "⚡ Physics" },
@@ -1225,7 +1287,6 @@ function loadQ() {
 document.getElementById('nextBtn').onclick = () => { qIndex++; loadQ(); };
 setTimeout(loadQ, 7200);
 
-// ─── FORMULA CARDS ───────────────────────────
 const formulas = [
   { label: 'Physics', eq: 'F = ma', name: "Newton's 2nd Law" },
   { label: 'Physics', eq: 'v = u + at', name: 'Equations of Motion' },
@@ -1247,20 +1308,24 @@ formulas.forEach(f => {
   fs.appendChild(div);
 });
 
-// ─── THEME TOGGLE ─────────────────────────────
 const themeBtn = document.getElementById('themeBtn');
 themeBtn.onclick = () => {
   document.body.classList.toggle('light');
-  themeBtn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+  themeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
 };
 
-// ─── SMOOTH SCROLL NAV ────────────────────────
 document.querySelectorAll('nav a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
-    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
   });
 });
+
+function setActive(el) {
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
 </script>
 </body>
 </html>
