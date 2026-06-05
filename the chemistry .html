@@ -1,0 +1,3056 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚗️ CHEMLAB — IGCSE Chemistry 0620</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --neon-cyan: #00f5ff;
+  --neon-pink: #ff00ff;
+  --neon-green: #39ff14;
+  --neon-gold: #ffd700;
+  --neon-orange: #ff6a00;
+  --dark: #050510;
+  --dark2: #0a0a1a;
+  --dark3: #0f0f2a;
+  --card: rgba(255,255,255,0.04);
+  --card-border: rgba(0,245,255,0.2);
+  --text: #e0e8ff;
+  --muted: #7a8ab0;
+  --shadow-neon: 0 0 30px rgba(0,245,255,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--dark);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+#cursor {
+  position: fixed; width: 20px; height: 20px;
+  border: 2px solid var(--neon-cyan); border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%,-50%);
+  transition: width 0.2s, height 0.2s, border-color 0.2s;
+  mix-blend-mode: difference;
+}
+#cursor-dot {
+  position: fixed; width: 6px; height: 6px;
+  background: var(--neon-cyan); border-radius: 50%;
+  pointer-events: none; z-index: 99999;
+  transform: translate(-50%,-50%);
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 40px;
+  background: rgba(5,5,16,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,245,255,0.15);
+}
+.nav-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem; font-weight: 900;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+}
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  color: var(--muted); text-decoration: none;
+  font-weight: 600; font-size: 0.9rem; letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 2px; background: var(--neon-cyan);
+  transform: scaleX(0); transition: transform 0.3s;
+}
+.nav-links a:hover { color: var(--neon-cyan); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+/* 3D CANVAS BACKGROUND */
+#bg-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+
+/* SECTIONS BASE */
+section { position: relative; z-index: 10; }
+
+/* ===== HOME SECTION ===== */
+#home {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 100px 40px 60px;
+}
+
+.home-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid var(--neon-cyan);
+  border-radius: 30px; padding: 8px 20px;
+  font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--neon-cyan); margin-bottom: 30px;
+  box-shadow: 0 0 15px rgba(0,245,255,0.2);
+  animation: pulse-border 3s infinite;
+}
+@keyframes pulse-border {
+  0%,100% { box-shadow: 0 0 15px rgba(0,245,255,0.2); }
+  50% { box-shadow: 0 0 30px rgba(0,245,255,0.5); }
+}
+
+.home-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.5rem,6vw,5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.home-title .t1 { color: white; display: block; }
+.home-title .t2 {
+  display: block;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-size: 200%; animation: gradient-shift 4s ease infinite;
+}
+@keyframes gradient-shift {
+  0% { background-position: 0% }
+  50% { background-position: 100% }
+  100% { background-position: 0% }
+}
+
+.home-sub {
+  font-size: 1.1rem; color: var(--muted); max-width: 600px;
+  line-height: 1.8; margin-bottom: 40px;
+}
+
+.home-stats {
+  display: flex; gap: 40px; justify-content: center;
+  margin-bottom: 50px; flex-wrap: wrap;
+}
+.stat-card {
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 20px 30px;
+  backdrop-filter: blur(10px);
+}
+.stat-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-lbl { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, var(--neon-cyan), #0080ff);
+  color: #000; font-weight: 900; font-size: 1rem;
+  padding: 16px 36px; border-radius: 50px;
+  text-decoration: none; border: none; cursor: pointer;
+  font-family: 'Exo 2', sans-serif;
+  letter-spacing: 1px; text-transform: uppercase;
+  transition: all 0.3s; box-shadow: 0 0 30px rgba(0,245,255,0.4);
+  position: relative; overflow: hidden;
+}
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 60px rgba(0,245,255,0.7);
+}
+.btn-primary::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(255,255,255,0.3));
+  transform: translateX(-100%); transition: transform 0.4s;
+}
+.btn-primary:hover::after { transform: translateX(100%); }
+
+/* FLOATING ATOMS */
+.atom-float {
+  position: absolute; pointer-events: none;
+  animation: float-atom 8s ease-in-out infinite;
+  font-size: 3rem; opacity: 0.15;
+}
+@keyframes float-atom {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-30px) rotate(10deg); }
+  66% { transform: translateY(15px) rotate(-5deg); }
+}
+
+/* ===== ABOUT SECTION ===== */
+#about {
+  padding: 100px 40px;
+  max-width: 1200px; margin: 0 auto;
+}
+
+.section-header {
+  text-align: center; margin-bottom: 60px;
+}
+.section-tag {
+  font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--neon-pink); margin-bottom: 12px; font-weight: 700;
+}
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900; color: white;
+  margin-bottom: 16px;
+}
+.section-title span {
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.section-desc { color: var(--muted); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+
+.about-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+.about-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 20px; padding: 30px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+}
+.about-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+}
+.about-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 20px 60px rgba(0,245,255,0.15);
+}
+.about-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+.about-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem; font-weight: 700; color: white;
+  margin-bottom: 10px; letter-spacing: 1px;
+}
+.about-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+
+/* TOPIC CARDS (notes) */
+#physics { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+
+.topic-tabs {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 30px; justify-content: center;
+}
+.topic-tab {
+  padding: 8px 20px; border-radius: 30px;
+  border: 1px solid var(--card-border);
+  background: var(--card); color: var(--muted);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.5px;
+}
+.topic-tab:hover, .topic-tab.active {
+  border-color: var(--neon-cyan); color: var(--neon-cyan);
+  background: rgba(0,245,255,0.08);
+  box-shadow: 0 0 15px rgba(0,245,255,0.15);
+}
+
+.notes-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 20px; margin-bottom: 20px;
+  overflow: hidden; transition: all 0.3s;
+}
+.notes-card:hover { border-color: rgba(0,245,255,0.4); }
+
+.notes-header {
+  padding: 18px 24px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+}
+.notes-icon { font-size: 1.6rem; }
+.notes-header h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem; font-weight: 700; color: white;
+  flex: 1;
+}
+.notes-toggle {
+  width: 28px; height: 28px;
+  border: 1px solid var(--card-border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--neon-cyan); font-size: 1rem;
+  transition: transform 0.3s;
+}
+.notes-body {
+  padding: 0 24px 20px;
+  display: none;
+}
+.notes-body.open { display: block; }
+
+.core-pill {
+  display: inline-block; font-size: 0.65rem; font-weight: 700;
+  padding: 2px 10px; border-radius: 10px; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.pill-core { background: rgba(0,120,255,0.2); color: #60a5fa; border: 1px solid rgba(96,165,250,0.3); }
+.pill-supp { background: rgba(251,146,0,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+.notes-list { list-style: none; padding: 0; margin: 8px 0; }
+.notes-list li {
+  padding: 6px 0 6px 20px; position: relative;
+  color: var(--text); font-size: 0.9rem; line-height: 1.6;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.notes-list li::before {
+  content: '▸'; position: absolute; left: 0;
+  color: var(--neon-cyan); font-size: 0.7rem; top: 8px;
+}
+
+.eq-box {
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(0,245,255,0.2);
+  border-radius: 10px; padding: 10px 16px; margin: 8px 0;
+  font-family: 'Fira Code', monospace; font-size: 0.88rem;
+  color: var(--neon-cyan); display: inline-block;
+}
+
+.mem-tip {
+  background: rgba(57,255,20,0.07); border: 1px solid rgba(57,255,20,0.2);
+  border-radius: 10px; padding: 10px 14px; margin: 10px 0;
+  font-size: 0.88rem; color: #a3e635;
+}
+
+.data-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.85rem; }
+.data-table th {
+  background: rgba(0,245,255,0.1); color: var(--neon-cyan);
+  padding: 8px 12px; text-align: left; font-weight: 700;
+  border-bottom: 1px solid rgba(0,245,255,0.2);
+}
+.data-table td { padding: 7px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); }
+.data-table tr:hover td { background: rgba(0,245,255,0.04); }
+
+/* ===== CONTACT SECTION ===== */
+#contact {
+  padding: 100px 40px;
+  max-width: 800px; margin: 0 auto; text-align: center;
+}
+.contact-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 24px; padding: 60px 40px;
+  backdrop-filter: blur(10px);
+  position: relative; overflow: hidden;
+}
+.contact-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(0,245,255,0.08), transparent 60%);
+  pointer-events: none;
+}
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; text-align: left; }
+.contact-input {
+  width: 100%; padding: 14px 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(0,245,255,0.2);
+  border-radius: 12px; color: white;
+  font-family: 'Exo 2', sans-serif; font-size: 0.95rem;
+  outline: none; transition: border-color 0.3s;
+}
+.contact-input:focus { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,245,255,0.1); }
+.contact-input::placeholder { color: var(--muted); }
+.contact-input.full { grid-column: 1/-1; }
+textarea.contact-input { resize: vertical; min-height: 120px; }
+
+/* ===== QUESTIONS SECTION ===== */
+#questions {
+  padding: 80px 40px;
+  max-width: 1000px; margin: 0 auto;
+}
+
+/* Score dashboard */
+.score-dashboard {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 20px; padding: 24px 30px;
+  display: flex; gap: 30px; align-items: center;
+  flex-wrap: wrap; margin-bottom: 36px;
+  backdrop-filter: blur(10px);
+  position: sticky; top: 80px; z-index: 100;
+}
+.score-item { text-align: center; }
+.score-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem; font-weight: 900;
+}
+.score-num.answered { color: var(--neon-cyan); }
+.score-num.correct { color: var(--neon-green); }
+.score-num.wrong { color: #ff4444; }
+.score-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.score-divider { width: 1px; height: 50px; background: var(--card-border); }
+.score-bar-wrap { flex: 1; min-width: 200px; }
+.progress-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.progress-track { height: 10px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; }
+.progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+  border-radius: 10px; transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(0,245,255,0.5);
+}
+
+/* Q-section */
+.q-section {
+  margin-bottom: 50px;
+}
+.q-section-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 24px; border-radius: 16px 16px 0 0;
+  margin-bottom: 2px;
+}
+.q-section-icon { font-size: 1.8rem; }
+.q-section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem; font-weight: 700; color: white;
+}
+.q-section-count { margin-left: auto; font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+
+/* Question card */
+.q-card {
+  background: rgba(10,10,26,0.8);
+  border: 1px solid var(--card-border);
+  border-radius: 16px; margin-bottom: 16px;
+  overflow: hidden; transition: border-color 0.3s;
+  backdrop-filter: blur(5px);
+}
+.q-card:hover { border-color: rgba(0,245,255,0.4); }
+
+.q-top {
+  padding: 16px 20px;
+  display: flex; align-items: flex-start; gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
+}
+.q-badge {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 8px;
+  flex-shrink: 0; margin-top: 2px;
+}
+.badge-q { background: rgba(0,245,255,0.15); color: var(--neon-cyan); border: 1px solid rgba(0,245,255,0.3); }
+.badge-mcq { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.badge-struct { background: rgba(251,146,0,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+.badge-calc { background: rgba(236,72,153,0.15); color: #f472b6; border: 1px solid rgba(244,114,182,0.3); }
+
+.diff-tag {
+  font-size: 0.65rem; font-weight: 700; padding: 3px 9px;
+  border-radius: 6px; flex-shrink: 0; margin-top: 4px;
+}
+.diff-easy { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+.diff-med { background: rgba(234,179,8,0.15); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
+.diff-hard { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+
+.q-text { font-size: 0.95rem; font-weight: 600; line-height: 1.6; flex: 1; }
+.q-marks {
+  margin-left: auto; font-size: 0.72rem; font-weight: 700;
+  padding: 3px 9px; border-radius: 8px; flex-shrink: 0; margin-top: 2px;
+  background: rgba(255,68,68,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3);
+}
+
+.q-bottom { padding: 16px 20px; }
+
+/* MCQ */
+.mcq-opts { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.mcq-opt {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 14px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer; transition: all 0.2s; font-size: 0.92rem;
+}
+.mcq-opt:hover:not(.locked) { border-color: var(--neon-cyan); background: rgba(0,245,255,0.06); }
+.mcq-opt.correct { border-color: var(--neon-green) !important; background: rgba(57,255,20,0.08) !important; color: var(--neon-green) !important; }
+.mcq-opt.wrong { border-color: #ff4444 !important; background: rgba(255,68,68,0.08) !important; color: #f87171 !important; }
+.opt-ltr {
+  font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700;
+  background: rgba(255,255,255,0.1); border-radius: 6px;
+  padding: 2px 7px; flex-shrink: 0; margin-top: 2px;
+}
+
+/* Answer box */
+.ans-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan); padding: 9px 18px;
+  border-radius: 10px; font-family: 'Exo 2', sans-serif;
+  font-weight: 700; font-size: 0.85rem; cursor: pointer;
+  transition: all 0.2s; margin-top: 8px;
+}
+.ans-btn:hover { background: rgba(0,245,255,0.1); box-shadow: 0 0 15px rgba(0,245,255,0.2); }
+.ans-box {
+  display: none; margin-top: 12px;
+  background: rgba(57,255,20,0.05); border: 1px solid rgba(57,255,20,0.25);
+  border-radius: 12px; padding: 14px 18px;
+  font-size: 0.9rem; line-height: 1.8; color: #a3e635;
+}
+.ans-box.show { display: block; }
+.ans-box strong { color: var(--neon-green); }
+
+/* Gradient headers */
+.gh1 { background: linear-gradient(135deg, #312e81, #4f46e5); }
+.gh2 { background: linear-gradient(135deg, #0e7490, #06b6d4); }
+.gh3 { background: linear-gradient(135deg, #b45309, #f59e0b); }
+.gh4 { background: linear-gradient(135deg, #065f46, #10b981); }
+.gh5 { background: linear-gradient(135deg, #991b1b, #ef4444); }
+.gh6 { background: linear-gradient(135deg, #5b21b6, #8b5cf6); }
+.gh7 { background: linear-gradient(135deg, #9d174d, #ec4899); }
+.gh8 { background: linear-gradient(135deg, #1e40af, #3b82f6); }
+.gh9 { background: linear-gradient(135deg, #78350f, #d97706); }
+.gh10 { background: linear-gradient(135deg, #14532d, #22c55e); }
+.gh11 { background: linear-gradient(135deg, #701a75, #d946ef); }
+.gh12 { background: linear-gradient(135deg, #1e3a5f, #2563eb); }
+
+/* FOOTER */
+footer {
+  text-align: center; padding: 40px 20px;
+  border-top: 1px solid rgba(0,245,255,0.1);
+  color: var(--muted); font-size: 0.85rem;
+  background: var(--dark2);
+}
+.footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem; font-weight: 900;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+
+/* SCROLL REVEAL */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Notification toast */
+#toast {
+  position: fixed; bottom: 30px; right: 30px;
+  background: rgba(0,245,255,0.9); color: #000;
+  padding: 14px 24px; border-radius: 12px;
+  font-weight: 700; font-size: 0.9rem;
+  transform: translateX(200%); transition: transform 0.4s;
+  z-index: 9999;
+}
+#toast.show { transform: translateX(0); }
+
+/* Particle effects on correct answer */
+.confetti-burst {
+  position: fixed; pointer-events: none; z-index: 9999;
+}
+
+@media(max-width:768px) {
+  nav { padding: 14px 20px; }
+  .nav-links { gap: 20px; }
+  .nav-links a { font-size: 0.78rem; }
+  #home, #about, #questions, #contact, #physics { padding: 80px 20px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .score-dashboard { gap: 16px; position: static; }
+}
+
+/* Section separator */
+.sep {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,245,255,0.3), transparent);
+  margin: 0 40px;
+}
+
+/* Glow line decoration */
+.glow-line {
+  width: 80px; height: 3px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+  border-radius: 3px; margin: 0 auto 20px;
+  box-shadow: 0 0 15px rgba(0,245,255,0.5);
+}
+
+/* Achievement banner */
+.achievement {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 30px; padding: 6px 18px; font-size: 0.82rem;
+  color: var(--neon-gold); font-weight: 700;
+  margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-dot"></div>
+
+<!-- Toast -->
+<div id="toast">✅ Correct!</div>
+
+<!-- 3D Background Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚗️ CHEMLAB</div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#physics">Notes</a></li>
+    <li><a href="#questions">Questions</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HOME ===== -->
+<section id="home">
+  <span class="atom-float" style="top:20%;left:5%;animation-delay:0s">⚗️</span>
+  <span class="atom-float" style="top:60%;right:5%;animation-delay:2s">🧪</span>
+  <span class="atom-float" style="top:30%;right:12%;animation-delay:4s;font-size:2rem">⚛️</span>
+  <span class="atom-float" style="top:75%;left:10%;animation-delay:1s;font-size:2rem">🔬</span>
+
+  <div class="home-badge">
+    <span>⚡</span> Cambridge IGCSE Chemistry 0620
+  </div>
+
+  <h1 class="home-title">
+    <span class="t1">MASTER</span>
+    <span class="t2">CHEMISTRY</span>
+  </h1>
+  <p class="home-sub">Your ultimate revision weapon for Cambridge IGCSE Chemistry. 3D visualisations, 100+ questions, complete notes — built for the new generation of scientists.</p>
+
+  <div class="home-stats">
+    <div class="stat-card">
+      <div class="stat-val" id="totalQ">100+</div>
+      <div class="stat-lbl">Questions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">12</div>
+      <div class="stat-lbl">Topics</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">3D</div>
+      <div class="stat-lbl">Animations</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">FREE</div>
+      <div class="stat-lbl">Always</div>
+    </div>
+  </div>
+
+  <a href="#questions" class="btn-primary">🚀 Start Practising</a>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="section-header reveal">
+    <div class="section-tag">About This Platform</div>
+    <div class="glow-line"></div>
+    <h2 class="section-title">Why <span>CHEMLAB</span>?</h2>
+    <p class="section-desc">Not another boring PDF. This is an interactive chemistry universe designed for students who learn differently.</p>
+  </div>
+  <div class="about-grid">
+    <div class="about-card reveal">
+      <span class="about-icon">🧠</span>
+      <h3>BRAIN-WIRED LEARNING</h3>
+      <p>Neuroscience-backed design: short bursts, instant feedback, visual anchors. Your brain learns faster when it's engaged.</p>
+    </div>
+    <div class="about-card reveal">
+      <span class="about-icon">🎮</span>
+      <h3>GAMIFIED QUESTIONS</h3>
+      <p>100+ MCQs, structured, and calculation questions with live scoring, streaks, and difficulty levels. Chemistry as a game you can win.</p>
+    </div>
+    <div class="about-card reveal">
+      <span class="about-icon">🌌</span>
+      <h3>3D ATOM UNIVERSE</h3>
+      <p>Real-time 3D particle background built with WebGL. Chemistry is visualised, not just memorised. See the invisible world of atoms.</p>
+    </div>
+    <div class="about-card reveal">
+      <span class="about-icon">📖</span>
+      <h3>COMPLETE NOTES</h3>
+      <p>Every topic from the Cambridge 0620 syllabus (2026–2028), covering both Core and Supplement, in a searchable interactive format.</p>
+    </div>
+    <div class="about-card reveal">
+      <span class="about-icon">⚡</span>
+      <h3>INSTANT ANSWERS</h3>
+      <p>Model answers for every question, hidden until you're ready. No cheating yourself — reveal when you've genuinely tried.</p>
+    </div>
+    <div class="about-card reveal">
+      <span class="about-icon">📱</span>
+      <h3>WORKS EVERYWHERE</h3>
+      <p>Fully responsive on desktop, tablet, and mobile. Revise on the bus, in bed, or at the library — anywhere you go.</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== PHYSICS (NOTES) ===== -->
+<section id="physics">
+  <div class="section-header reveal">
+    <div class="section-tag">Complete Syllabus Notes</div>
+    <div class="glow-line"></div>
+    <h2 class="section-title">All <span>12 Topics</span></h2>
+    <p class="section-desc">IGCSE 0620 complete coverage — Core &amp; Supplement. Click any topic to expand.</p>
+  </div>
+
+  <!-- Topic 1 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh1" onclick="toggleNotes(this)">
+      <span class="notes-icon">🌊</span>
+      <h3>Topic 1 — States of Matter</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Three states: solid, liquid, gas — explained by kinetic particle theory</li>
+        <li>Solids: fixed shape/volume; particles vibrate in fixed positions</li>
+        <li>Liquids: fixed volume; particles move/slide; take shape of container</li>
+        <li>Gases: no fixed shape/volume; particles move rapidly and randomly</li>
+        <li>Changes of state: melting, boiling, condensation, freezing, sublimation</li>
+        <li>Diffusion: movement of particles from high → low concentration</li>
+        <li>Brownian motion: random movement of particles, evidence for kinetic theory</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Kinetic energy ∝ temperature; higher temp = faster particles</li>
+        <li>Gas pressure caused by particle collisions with container walls</li>
+        <li>Evaporation: faster particles escape from liquid surface; cooling effect</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Topic 2 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh2" onclick="toggleNotes(this)">
+      <span class="notes-icon">⚛️</span>
+      <h3>Topic 2 — Atoms, Elements &amp; Compounds</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Atom = smallest particle of an element; nucleus + electrons in shells</li>
+        <li>Proton (+1 charge, mass 1), Neutron (0 charge, mass 1), Electron (−1, mass ≈ 0)</li>
+        <li>Atomic/proton number = number of protons; Mass number = protons + neutrons</li>
+        <li>Electron configuration: elements 1–20 (e.g. Na = 2,8,1)</li>
+        <li>Group = outer electrons; Period = number of shells</li>
+        <li>Ionic bond: metal loses e⁻ → cation; non-metal gains e⁻ → anion</li>
+        <li>Covalent bond: shared pair of electrons</li>
+        <li>Diamond: giant covalent, very hard; Graphite: layers, conducts electricity</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Isotopes: same proton number, different neutron number</li>
+        <li>Ar = Σ(mass × abundance) / 100</li>
+        <li>Ionic compounds have giant lattice structure — high MP/BP</li>
+        <li>Metallic bonding: sea of delocalised electrons around positive ions</li>
+        <li>SiO₂ has diamond-like giant covalent structure — very high MP</li>
+      </ul>
+      <table class="data-table">
+        <tr><th>Particle</th><th>Mass</th><th>Charge</th><th>Location</th></tr>
+        <tr><td>Proton</td><td>1</td><td>+1</td><td>Nucleus</td></tr>
+        <tr><td>Neutron</td><td>1</td><td>0</td><td>Nucleus</td></tr>
+        <tr><td>Electron</td><td>≈0</td><td>−1</td><td>Shells</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Topic 3 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh3" onclick="toggleNotes(this)">
+      <span class="notes-icon">⚖️</span>
+      <h3>Topic 3 — Stoichiometry</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Molecular formula = exact atoms in a molecule (e.g. H₂O, CH₄)</li>
+        <li>Balance symbol equations with state symbols: (s), (l), (g), (aq)</li>
+        <li>Ar = average mass of isotopes relative to 1/12 of ¹²C</li>
+        <li>Mr = sum of all Ar values in the formula</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Empirical formula = simplest whole-number ratio (e.g. CH₂O for glucose)</li>
+        <li>1 mole = 6.02 × 10²³ particles (Avogadro's constant)</li>
+        <li>Molar volume of gas = 24 dm³ at r.t.p.</li>
+      </ul>
+      <div class="eq-box">n = m / Mr &nbsp;&nbsp;(moles = mass ÷ molar mass)</div><br>
+      <div class="eq-box">n = c × V &nbsp;&nbsp;(moles = concentration × volume)</div><br>
+      <div class="eq-box">% yield = (actual / theoretical) × 100</div>
+      <div class="mem-tip">🌿 "Mr Mole lives at 24" — molar volume = 24 dm³ at r.t.p.</div>
+    </div>
+  </div>
+
+  <!-- Topic 4 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh4" onclick="toggleNotes(this)">
+      <span class="notes-icon">⚡</span>
+      <h3>Topic 4 — Electrochemistry</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Electrolysis: decomposition of ionic compound by electric current</li>
+        <li>Cathode (−): metals or H₂ form; cations gain electrons (reduction)</li>
+        <li>Anode (+): non-metals (except H₂) form; anions lose electrons (oxidation)</li>
+        <li>Electrolyte: molten or dissolved ionic substance</li>
+      </ul>
+      <table class="data-table">
+        <tr><th>Electrolyte</th><th>At Cathode</th><th>At Anode</th></tr>
+        <tr><td>Molten PbBr₂</td><td>Lead (Pb)</td><td>Bromine (Br₂)</td></tr>
+        <tr><td>Dilute H₂SO₄</td><td>Hydrogen (H₂)</td><td>Oxygen (O₂)</td></tr>
+        <tr><td>Conc. NaCl(aq)</td><td>Hydrogen (H₂)</td><td>Chlorine (Cl₂)</td></tr>
+      </table>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Electroplating: object is cathode; plating metal is anode; electrolyte = salt of plating metal</li>
+        <li>Discharge order: concentrated anion preferentially discharged</li>
+        <li>OIL RIG: Oxidation Is Loss, Reduction Is Gain of electrons</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Topic 5 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh5" onclick="toggleNotes(this)">
+      <span class="notes-icon">⚗️</span>
+      <h3>Topic 5 — Chemical Energetics</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Exothermic: heat released; temperature rises; ΔH is negative</li>
+        <li>Endothermic: heat absorbed; temperature falls; ΔH is positive</li>
+        <li>Activation energy (Ea): minimum energy needed to start a reaction</li>
+        <li>Catalyst: lowers Ea, increases reaction rate, not consumed</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Bond breaking: endothermic (energy absorbed)</li>
+        <li>Bond forming: exothermic (energy released)</li>
+        <li>ΔH = energy absorbed (breaking) − energy released (forming)</li>
+        <li>If ΔH negative → exothermic; if positive → endothermic</li>
+      </ul>
+      <div class="mem-tip">🌿 Ex-o = Exit heat (gives out) | En-do = Enter heat (takes in)</div>
+    </div>
+  </div>
+
+  <!-- Topic 6 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh6" onclick="toggleNotes(this)">
+      <span class="notes-icon">💨</span>
+      <h3>Topic 6 — Reaction Kinetics</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Rate of reaction = amount of product formed / time (or reactant used / time)</li>
+        <li>Factors affecting rate: concentration, temperature, particle size, catalyst, light</li>
+        <li>Collision theory: particles must collide with sufficient energy (≥ Ea) to react</li>
+        <li>Higher concentration → more particles → more collisions per second → faster rate</li>
+        <li>Higher temperature → particles move faster → more frequent & energetic collisions</li>
+        <li>Smaller particle size → greater surface area → more collisions</li>
+        <li>Catalyst provides alternative route with lower Ea</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Measuring rate: volume of gas collected, change in mass, change in colour/turbidity</li>
+        <li>Gradient of a rate graph = instantaneous rate of reaction</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Topic 7 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh7" onclick="toggleNotes(this)">
+      <span class="notes-icon">🔴</span>
+      <h3>Topic 7 — Acids, Bases &amp; Salts</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Acids: produce H⁺ ions in solution; pH &lt; 7; universal indicator goes red/orange</li>
+        <li>Bases: react with acids to form salt + water; metal oxides/hydroxides</li>
+        <li>Alkalis: soluble bases; produce OH⁻ ions in solution; pH &gt; 7</li>
+        <li>Neutralisation: acid + base → salt + water</li>
+        <li>Salt preparation: titration, precipitation, direct reaction with metal</li>
+        <li>Acid + metal → salt + H₂</li>
+        <li>Acid + carbonate → salt + H₂O + CO₂</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>pH scale: 0–14; pH 7 = neutral; log scale (each unit = ×10 concentration change)</li>
+        <li>Strong acids: fully ionised (HCl, H₂SO₄, HNO₃)</li>
+        <li>Weak acids: partially ionised (ethanoic acid, citric acid)</li>
+      </ul>
+      <table class="data-table">
+        <tr><th>Reaction</th><th>Products</th></tr>
+        <tr><td>Acid + metal</td><td>Salt + H₂</td></tr>
+        <tr><td>Acid + base</td><td>Salt + H₂O</td></tr>
+        <tr><td>Acid + carbonate</td><td>Salt + H₂O + CO₂</td></tr>
+        <tr><td>Acid + ammonia</td><td>Ammonium salt</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Topic 8 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh8" onclick="toggleNotes(this)">
+      <span class="notes-icon">🔁</span>
+      <h3>Topic 8 — The Periodic Table</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Elements arranged by increasing atomic/proton number</li>
+        <li>Periods (rows): same number of electron shells; Properties change across period</li>
+        <li>Groups (columns): same number of outer electrons; similar chemical properties</li>
+        <li>Group 1 (Alkali Metals): soft, reactive, density &lt; water; react with water → metal hydroxide + H₂</li>
+        <li>Group 7 (Halogens): diatomic molecules; oxidising agents; more reactive going UP the group</li>
+        <li>Group 0 (Noble Gases): inert, full outer shell, monatomic</li>
+        <li>Transition metals: high MP/BP; variable oxidation states; form coloured compounds; good catalysts</li>
+      </ul>
+      <div class="mem-tip">🌿 "SALT" — Group 7 reactivity: F &gt; Cl &gt; Br &gt; I (displacement: more reactive halogen displaces less reactive)</div>
+    </div>
+  </div>
+
+  <!-- Topic 9 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh9" onclick="toggleNotes(this)">
+      <span class="notes-icon">🏭</span>
+      <h3>Topic 9 — Metals</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Reactivity series: K, Na, Ca, Mg, Al, (C), Zn, Fe, (H), Cu, Ag, Au</li>
+        <li>More reactive metals: react with cold water, dilute acid, displace less reactive metals</li>
+        <li>Extraction: reduction with carbon (if below C) or electrolysis (if above C)</li>
+        <li>Iron made in Blast Furnace: Fe₂O₃ + CO → Fe + CO₂</li>
+        <li>Aluminium extracted by electrolysis (too reactive for C reduction)</li>
+        <li>Rust = hydrated iron(III) oxide; requires Fe + H₂O + O₂</li>
+        <li>Rusting prevention: painting, galvanising (zinc coat), sacrificial protection</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Alloys: steel (Fe + C), stainless steel (Fe + Cr + Ni), brass (Cu + Zn), bronze (Cu + Sn)</li>
+        <li>Alloys are harder than pure metals — layers can't slide over each other</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Topic 10 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh10" onclick="toggleNotes(this)">
+      <span class="notes-icon">🌿</span>
+      <h3>Topic 10 — Chemistry of the Environment</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Air: 78% N₂, 21% O₂, ~1% Ar, ~0.04% CO₂</li>
+        <li>Water treatment: sedimentation, filtration, chlorination</li>
+        <li>Acid rain: caused by SO₂ and NOₓ from combustion; pH &lt; 5.6</li>
+        <li>Greenhouse gases: CO₂, CH₄, water vapour → global warming</li>
+        <li>Ozone layer depletion: CFCs destroy ozone (O₃) → increased UV radiation</li>
+        <li>Haber process: N₂ + 3H₂ ⇌ 2NH₃ (450°C, 200 atm, Fe catalyst)</li>
+        <li>Ostwald process: NH₃ → HNO₃ (used in fertilisers)</li>
+      </ul>
+      <div class="mem-tip">🌿 "NaH Fe" — Haber process conditions: N₂/H₂ reactants, Fe catalyst, High temp &amp; pressure</div>
+    </div>
+  </div>
+
+  <!-- Topic 11 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh11" onclick="toggleNotes(this)">
+      <span class="notes-icon">🧴</span>
+      <h3>Topic 11 — Organic Chemistry</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Alkanes: CₙH₂ₙ₊₂; saturated; combustion, substitution; methane, ethane, propane, butane</li>
+        <li>Alkenes: CₙH₂ₙ; unsaturated (C=C); addition reactions; ethene, propene</li>
+        <li>Alcohols: –OH group; fermentation (glucose → ethanol + CO₂); combustion; oxidation → carboxylic acid</li>
+        <li>Carboxylic acids: –COOH group; weak acids; react with Na, NaOH, Na₂CO₃, alcohols</li>
+        <li>Esters: from acid + alcohol; used in flavourings/perfumes</li>
+        <li>Crude oil: fractional distillation separates by boiling points</li>
+        <li>Cracking: long chains → shorter chains + alkenes; thermal or catalytic</li>
+        <li>Polymers: addition polymers (polyethene) and condensation polymers (nylon, polyester)</li>
+      </ul>
+      <div class="core-pill pill-supp">Supplement</div>
+      <ul class="notes-list">
+        <li>Hydration of ethene: C₂H₄ + H₂O → C₂H₅OH (300°C, H₃PO₄ catalyst, 65 atm)</li>
+        <li>Test for alkene: bromine water decolourises (orange → colourless)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Topic 12 -->
+  <div class="notes-card reveal">
+    <div class="notes-header gh12" onclick="toggleNotes(this)">
+      <span class="notes-icon">🔬</span>
+      <h3>Topic 12 — Experimental Techniques</h3>
+      <div class="notes-toggle">▼</div>
+    </div>
+    <div class="notes-body">
+      <div class="core-pill pill-core">Core</div>
+      <ul class="notes-list">
+        <li>Gas tests: H₂ → pop (burning splint); O₂ → relights glowing splint; CO₂ → limewater milky; Cl₂ → bleaches damp litmus</li>
+        <li>NH₃ → pungent smell, damp red litmus turns blue</li>
+        <li>Flame tests: Li=red, Na=yellow, K=lilac, Cu=blue-green, Ca=orange-red</li>
+        <li>Chromatography: Rf = distance by spot / distance by solvent front</li>
+        <li>Filtration, evaporation, crystallisation, distillation, fractional distillation</li>
+        <li>Precipitation: add reagent to produce insoluble salt</li>
+      </ul>
+      <table class="data-table">
+        <tr><th>Ion</th><th>Test</th><th>Positive result</th></tr>
+        <tr><td>Fe²⁺</td><td>Add NaOH</td><td>Green ppt, turns brown</td></tr>
+        <tr><td>Fe³⁺</td><td>Add NaOH</td><td>Red-brown ppt</td></tr>
+        <tr><td>Cu²⁺</td><td>Add NaOH</td><td>Blue ppt</td></tr>
+        <tr><td>NH₄⁺</td><td>Add NaOH, warm</td><td>Pungent gas (NH₃)</td></tr>
+        <tr><td>CO₃²⁻</td><td>Add dilute acid</td><td>Effervescence (CO₂)</td></tr>
+        <tr><td>SO₄²⁻</td><td>Add BaCl₂/HCl</td><td>White ppt</td></tr>
+        <tr><td>Cl⁻</td><td>Add AgNO₃/HNO₃</td><td>White ppt</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== QUESTIONS ===== -->
+<section id="questions">
+  <div class="section-header reveal">
+    <div class="section-tag">Exam Practice</div>
+    <div class="glow-line"></div>
+    <h2 class="section-title">100+ <span>Questions</span></h2>
+    <p class="section-desc">MCQs, structured questions, and calculations across all 12 topics. Instant feedback. Real exam style.</p>
+  </div>
+
+  <!-- Score dashboard -->
+  <div class="score-dashboard">
+    <div class="score-item">
+      <div class="score-num answered" id="sc-ans">0</div>
+      <div class="score-label">Answered</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-num correct" id="sc-cor">0</div>
+      <div class="score-label">Correct ✓</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <div class="score-num wrong" id="sc-wrg">0</div>
+      <div class="score-label">Wrong ✗</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-bar-wrap">
+      <div class="progress-label">
+        <span>Progress</span>
+        <span id="pct-lbl">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 1 QUESTIONS ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh1">
+      <span class="q-section-icon">🌊</span>
+      <div class="q-section-title">Topic 1 — States of Matter</div>
+      <div class="q-section-count">Q1–Q10</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q1</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which state of matter has a definite volume but no fixed shape?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Solid</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Liquid</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Gas</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Plasma</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q2</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which process describes a gas turning directly into a solid without passing through the liquid state?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Condensation</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Evaporation</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Sublimation (reverse)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Melting</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q3</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">In which state do particles have the most kinetic energy?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Solid</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Liquid</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Gas</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>All the same</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q4</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Bromine vapour placed in a sealed container gradually spreads throughout the container. This is an example of:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Diffusion</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Evaporation</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Condensation</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Sublimation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q5</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Explain, using kinetic particle theory, why gases can be compressed but solids cannot.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • In gases, particles are far apart / have large spaces between them [1]<br>
+          • Applying pressure forces particles closer together / reduces the space [1]<br>
+          • In solids, particles are already very close together / touching / no space between them so they cannot be pushed closer [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q6</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Ammonia diffuses faster than hydrogen chloride gas when released at opposite ends of a tube. What is the BEST explanation?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>NH₃ is more soluble in water than HCl</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>NH₃ has a lower molar mass and so its particles move faster at the same temperature</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>HCl has a higher boiling point than NH₃</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>NH₃ particles are smaller in size than HCl particles</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q7</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Describe Brownian motion and explain how it provides evidence for the kinetic particle theory.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Brownian motion is the random, erratic movement of small visible particles (e.g. pollen, smoke) suspended in a fluid [1]<br>
+          • The particles change direction unpredictably / zig-zag randomly [1]<br>
+          • This is caused by unequal/random collisions of invisible gas or liquid molecules hitting the visible particles [1]<br>
+          • This is evidence that molecules/particles are in constant random motion as predicted by kinetic theory [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q8</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">When liquid water evaporates, which particles escape from the surface?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>All particles have equal chance</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>The slowest-moving particles at the surface</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Only particles in the middle of the liquid</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>The fastest-moving particles at the surface</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q9</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Explain why the temperature of a liquid drops when it evaporates, even when no external heat source is removed.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • The fastest-moving particles escape from the liquid surface [1]<br>
+          • This reduces the average kinetic energy of the particles remaining in the liquid [1]<br>
+          • Lower average kinetic energy = lower temperature; this is the cooling effect of evaporation [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q10</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">A gas is heated at constant pressure. Which graph correctly shows the relationship between volume and temperature (in Kelvin)?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>A straight line through the origin (V ∝ T)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>A curve that increases then levels off</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>A straight line with a negative gradient</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>No relationship — volume stays constant</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 2 QUESTIONS ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh2">
+      <span class="q-section-icon">⚛️</span>
+      <div class="q-section-title">Topic 2 — Atoms, Elements &amp; Compounds</div>
+      <div class="q-section-count">Q11–Q20</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q11</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">An atom of an element has 11 protons and 12 neutrons. What is its mass number?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>11</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>12</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>23</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>1</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q12</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which subatomic particle determines the chemical properties of an element?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Proton</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Neutron</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Electron</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Nucleus</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q13</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Two isotopes of carbon are ¹²C and ¹⁴C. Which statement about them is CORRECT?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>They have different numbers of protons</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>They have the same chemical properties but different masses</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>They have the same number of neutrons</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>They are different elements</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q14</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Explain why ionic compounds have high melting points and conduct electricity when molten but not when solid.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Ionic compounds have a giant lattice structure of many oppositely charged ions [1]<br>
+          • High melting point: large amount of energy needed to overcome many strong electrostatic attractions [1]<br>
+          • In solid state, ions are in fixed positions and cannot move → no electrical conduction [1]<br>
+          • When molten, ions are free to move and carry charge → conducts electricity [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q15</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">What is the electronic configuration of a calcium atom (atomic number 20)?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>2,8,10</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>2,10,8</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>2,18</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>2,8,8,2</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q16</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Graphite conducts electricity but diamond does not, even though both are forms of carbon. The BEST explanation is:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Diamond has a higher melting point</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Diamond has ionic bonds</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Graphite has delocalised electrons free to move; diamond does not</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Graphite is softer than diamond</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q17</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Chlorine has two isotopes: ³⁵Cl (75%) and ³⁷Cl (25%). Calculate the relative atomic mass of chlorine.</span>
+        <span class="q-marks">[2]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (2 marks):</strong><br>
+          • Ar = (35 × 75 + 37 × 25) / 100 [1]<br>
+          • = (2625 + 925) / 100 = 3550 / 100 = <strong>35.5</strong> [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q18</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which type of bonding involves the transfer of electrons from one atom to another?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Ionic bonding</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Covalent bonding</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Metallic bonding</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Hydrogen bonding</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q19</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Compare the structure and properties of diamond and graphite. Explain why graphite is used as a lubricant and diamond in cutting tools.</span>
+        <span class="q-marks">[5]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (5 marks):</strong><br>
+          • Diamond: each C atom bonded to 4 others in a tetrahedral 3D giant covalent lattice [1]<br>
+          • Diamond is very hard because all bonds are strong covalent bonds in 3D → used in cutting tools [1]<br>
+          • Graphite: each C atom bonded to 3 others; forms flat hexagonal layers [1]<br>
+          • Layers held by weak forces → can slide over each other → lubricant [1]<br>
+          • One electron per carbon is delocalised → graphite conducts electricity [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q20</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which element is in Period 3 and Group VI of the periodic table?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Carbon (C)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Oxygen (O)</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Sulfur (S)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Chlorine (Cl)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 3 QUESTIONS ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh3">
+      <span class="q-section-icon">⚖️</span>
+      <div class="q-section-title">Topic 3 — Stoichiometry</div>
+      <div class="q-section-count">Q21–Q30</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q21</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Calculate the number of moles in 44 g of CO₂. (Mr of CO₂ = 44)</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Answer:</strong><br>
+          n = m / Mr = 44 / 44 = <strong>1.0 mol</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q22</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">How many particles are in 2 moles of water molecules?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>6.02 × 10²³</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>3.01 × 10²³</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>1.204 × 10²⁴</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>6.02 × 10²⁴</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q23</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">A compound contains 40% C, 6.7% H, 53.3% O by mass. Find its empirical formula. (Ar: C=12, H=1, O=16)</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Divide by Ar: C = 40/12 = 3.33; H = 6.7/1 = 6.7; O = 53.3/16 = 3.33 [1]<br>
+          • Divide by smallest (3.33): C = 1; H = 2.01 ≈ 2; O = 1 [1]<br>
+          • Empirical formula: <strong>CH₂O</strong> [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q24</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Calculate the volume of CO₂ produced at r.t.p. when 10 g of CaCO₃ decomposes. CaCO₃ → CaO + CO₂. (Mr CaCO₃ = 100)</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Moles CaCO₃ = 10 / 100 = 0.1 mol [1]<br>
+          • Moles CO₂ = 0.1 mol (1:1 ratio) [1]<br>
+          • Volume = 0.1 × 24 = <strong>2.4 dm³</strong> [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q25</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">In a reaction, 5.0 g of product was obtained from a theoretical yield of 8.0 g. What is the percentage yield?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>40%</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>62.5%</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>160%</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>75%</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q26</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">25.0 cm³ of 0.200 mol/dm³ NaOH is exactly neutralised by 20.0 cm³ of HCl. Calculate the concentration of HCl.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Moles NaOH = 0.200 × 25.0/1000 = 0.00500 mol [1]<br>
+          • Moles HCl = 0.00500 mol (1:1 ratio from NaOH + HCl → NaCl + H₂O) [1]<br>
+          • Concentration HCl = 0.00500 / (20.0/1000) = <strong>0.250 mol/dm³</strong> [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q27</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Nitrogen and hydrogen react: N₂ + 3H₂ → 2NH₃. If 14 g of N₂ reacts with excess H₂, what mass of NH₃ is produced? (Mr: N₂=28, NH₃=17)</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>8.5 g</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>14 g</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>17 g</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>34 g</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q28</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">A sample of impure iron has a purity of 80%. Calculate the mass of pure iron in a 250 g sample. Then calculate how many moles of Fe this is. (Ar Fe = 56)</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Mass of pure Fe = 80/100 × 250 = <strong>200 g</strong> [1]<br>
+          • Moles Fe = 200 / 56 = <strong>3.57 mol</strong> (3 s.f.) [2]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q29</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">What is the Mr of sulfuric acid, H₂SO₄? (Ar: H=1, S=32, O=16)</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>80</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>98</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>64</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>49</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q30</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">In a titration, 18.0 cm³ of 0.100 mol/dm³ H₂SO₄ neutralises 30.0 cm³ of NaOH. H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O. Find the concentration of NaOH.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Moles H₂SO₄ = 0.100 × 18.0/1000 = 0.00180 mol [1]<br>
+          • Moles NaOH = 2 × 0.00180 = 0.00360 mol [1]<br>
+          • Concentration NaOH = 0.00360 / (30.0/1000) = 0.120 mol/dm³ [1]<br>
+          • Award mark for correct unit: <strong>mol/dm³</strong> [1]
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 4: Electrochemistry ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh4">
+      <span class="q-section-icon">⚡</span>
+      <div class="q-section-title">Topic 4 — Electrochemistry</div>
+      <div class="q-section-count">Q31–Q40</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q31</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">During electrolysis of dilute sulfuric acid, what gas is produced at the cathode?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Hydrogen</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Oxygen</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Chlorine</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Sulfur dioxide</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q32</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which electrode is the positive electrode in an electrolytic cell?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Cathode</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Anode</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Electrolyte</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>External circuit</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q33</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">What happens at the cathode during electrolysis? This is an example of:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Oxidation — loss of electrons</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Reduction — gain of electrons</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Oxidation — gain of electrons</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Reduction — loss of electrons</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q34</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Describe the process of electroplating a spoon with silver. State the identity of each electrode and the electrolyte used.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Cathode: the spoon (object to be plated) [1]<br>
+          • Anode: a piece of pure silver metal [1]<br>
+          • Electrolyte: silver nitrate solution (aqueous silver salt) [1]<br>
+          • Silver ions from solution are reduced at the cathode → silver deposited on spoon; anode dissolves to replenish Ag⁺ ions [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q35</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">During electrolysis of concentrated sodium chloride solution, chlorine is produced at the anode instead of oxygen. This is because:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Cl⁻ ions are heavier than OH⁻ ions</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Oxygen cannot be oxidised</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>The voltage applied is too high</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Cl⁻ ions are at much higher concentration and are preferentially discharged</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q36</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Write half-equations for: (a) the formation of copper at the cathode during electrolysis of copper(II) sulfate solution, and (b) the reaction at the anode if it is made of copper.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • (a) Cathode: Cu²⁺ + 2e⁻ → Cu (reduction) [2]<br>
+          • (b) Anode (copper): Cu → Cu²⁺ + 2e⁻ (oxidation) [2]<br>
+          (1 mark each for correct species, 1 mark each for correct charges/electrons)
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q37</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which of the following can conduct electricity?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Solid NaCl</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Solid glucose</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Liquid paraffin</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Molten lead(II) bromide</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q38</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">OIL RIG stands for:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Oxidation Is Losing; Reduction Is Giving</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Oxidation Is Loss (of electrons); Reduction Is Gain (of electrons)</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Oxidation Involves Loss; Reduction Involves Gains</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Oxidation In Liquids; Reduction In Gases</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q39</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Predict and explain what is produced at each electrode when molten lead(II) bromide undergoes electrolysis.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Cathode: Lead (Pb) is deposited [1] — Pb²⁺ ions gain electrons / are reduced: Pb²⁺ + 2e⁻ → Pb [1]<br>
+          • Anode: Bromine (Br₂) is produced [1] — Br⁻ ions lose electrons / are oxidised: 2Br⁻ → Br₂ + 2e⁻ [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q40</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">During electrolysis of dilute copper(II) sulfate with inert electrodes, what is observed at the anode over time?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Copper is deposited on the anode</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Hydrogen gas bubbles appear</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Oxygen gas bubbles appear and the solution becomes more acidic</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>The anode dissolves into the solution</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 5: Energetics ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh5">
+      <span class="q-section-icon">🔥</span>
+      <div class="q-section-title">Topic 5 — Chemical Energetics</div>
+      <div class="q-section-count">Q41–Q50</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q41</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which statement correctly describes an exothermic reaction?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Energy is absorbed; temperature falls; ΔH is positive</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Energy is released; temperature rises; ΔH is negative</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Energy is released; temperature falls; ΔH is negative</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Energy is absorbed; temperature rises; ΔH is positive</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q42</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Bond breaking is _____ and bond forming is _____.</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Endothermic; exothermic</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Exothermic; endothermic</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Endothermic; endothermic</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Exothermic; exothermic</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q43</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Use bond energies to calculate ΔH for H₂ + Cl₂ → 2HCl. Bond energies: H–H = 436, Cl–Cl = 242, H–Cl = 431 kJ/mol.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Energy to break bonds: 436 + 242 = 678 kJ [1]<br>
+          • Energy released forming bonds: 2 × 431 = 862 kJ [1]<br>
+          • ΔH = 678 − 862 = <strong>−184 kJ/mol (exothermic)</strong> [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q44</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Explain what is meant by activation energy and how a catalyst affects it.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Activation energy is the minimum energy required for a reaction to occur / for bonds to be broken [1]<br>
+          • A catalyst provides an alternative reaction pathway [1]<br>
+          • This alternative pathway has a lower activation energy → more particles have enough energy → faster reaction [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q45</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which of the following is an endothermic reaction?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Combustion of methane</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Neutralisation of acid with alkali</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Rusting of iron</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Thermal decomposition of calcium carbonate</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q46</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">In an energy profile diagram for an exothermic reaction, which correctly describes the products?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Products are at a lower energy level than the reactants</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Products are at a higher energy level than the reactants</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Products and reactants are at the same energy level</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>The activation energy is zero for exothermic reactions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q47</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">When 0.5 g of magnesium ribbon is added to 100 cm³ of hydrochloric acid, the temperature rises from 20°C to 36°C. Calculate the energy released. (Specific heat capacity of solution = 4.18 J/g/°C; assume density = 1 g/cm³)</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Mass of solution ≈ 100 g; ΔT = 36 − 20 = 16°C [1]<br>
+          • Q = mcΔT = 100 × 4.18 × 16 = 6688 J [1]<br>
+          • = <strong>6.69 kJ</strong> (released, exothermic) [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q48</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">A catalyst is NOT consumed in a reaction. Which other statement about catalysts is correct?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>A catalyst increases the overall energy change of the reaction (ΔH)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>A catalyst provides the activation energy to start the reaction</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>A catalyst increases the rate of reaction by providing a lower energy pathway</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>A catalyst changes the products of a reaction</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q49</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Give three examples of exothermic reactions from everyday life and explain one in terms of bond breaking and making.</span>
+        <span class="q-marks">[5]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (5 marks):</strong><br>
+          • Examples: Combustion (e.g. burning wood/gas), Neutralisation (acid + alkali), Respiration, Rusting of iron, Hand warmers [1 each, max 3] [3]<br>
+          • Explanation using combustion: bonds broken in CH₄ and O₂ require energy (endothermic) [1]<br>
+          • More energy is released when new C=O and O–H bonds form in CO₂ and H₂O → overall exothermic [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q50</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">For the reaction A → B, ΔH = +60 kJ/mol. If a catalyst reduces the activation energy from 200 kJ to 120 kJ, what is the activation energy of the reverse reaction (B → A) WITHOUT a catalyst?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>140 kJ/mol</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>120 kJ/mol</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>140 kJ/mol (200 − 60 = 140)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>260 kJ/mol</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 6: Kinetics ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh6">
+      <span class="q-section-icon">💨</span>
+      <div class="q-section-title">Topic 6 — Reaction Kinetics</div>
+      <div class="q-section-count">Q51–Q60</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q51</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which factor does NOT affect the rate of a chemical reaction?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Temperature</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Concentration of reactants</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Particle size / surface area</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Colour of the reactants</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q52</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Explain, using collision theory, why increasing temperature increases the rate of reaction.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Increasing temperature increases the kinetic energy of particles [1]<br>
+          • Particles move faster → collide more frequently [1]<br>
+          • More collisions have energy ≥ activation energy → more successful collisions → faster rate [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q53</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Marble chips (CaCO₃) react with HCl. Which change would increase the rate WITHOUT changing the concentration of HCl?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Using fewer marble chips</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Using larger marble chip pieces</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Crushing the marble chips into powder</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Cooling the reaction mixture</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q54</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">A student measures the rate of the reaction between Na₂S₂O₃ and HCl by measuring time for a cross to disappear. Explain how this method works and suggest TWO variables that must be controlled.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Sulfur precipitate forms as the reaction proceeds, making the solution increasingly cloudy/opaque [1]<br>
+          • When the cross disappears beneath the flask, the reaction has reached a fixed "extent" of reaction; time is recorded [1]<br>
+          • Rate ∝ 1/time; faster rate = shorter time [1]<br>
+          • Control variables (any 2): volume of solutions, temperature, distance of flask from eye/cross size, same flask [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q55</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Two experiments use the same mass of zinc with excess HCl. Experiment A uses powdered zinc; Experiment B uses zinc granules. Which statement is correct?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Experiment B produces more H₂ gas</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Experiment A is faster but produces the same total volume of H₂</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Experiment A produces more H₂ because surface area is greater</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Both experiments have identical rates</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q56</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Sketch and label a rate-of-reaction graph showing volume of gas produced over time for (a) a fast reaction and (b) a slow reaction with the same total volume of gas produced.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Both curves level off at the SAME final volume (horizontal plateau) [1]<br>
+          • Fast reaction (a): steep initial gradient, reaches plateau quickly [1]<br>
+          • Slow reaction (b): gentle initial gradient, takes longer to reach the same plateau [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q57</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">What is the effect of a catalyst on the enthalpy change (ΔH) of a reaction?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>ΔH becomes more negative</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>ΔH becomes more positive</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>ΔH is unchanged</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>ΔH becomes zero</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q58</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Explain why increasing the pressure of a gas-phase reaction increases the rate of reaction, using collision theory.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Increasing pressure decreases the volume / compresses the gas [1]<br>
+          • Gas particles are closer together / higher concentration of gas particles [1]<br>
+          • More frequent collisions per unit time → more successful collisions → faster rate [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q59</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Light increases the rate of the reaction between H₂ and Cl₂. This is an example of which type of catalyst?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Heterogeneous catalyst</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Homogeneous catalyst</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Biological catalyst</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Photochemical reaction / light as a catalyst</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q60</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">In an experiment, doubling the concentration of reactant X doubles the rate. Halving the particle size of solid reactant Y also doubles the rate. If BOTH changes are made simultaneously, the rate becomes approximately:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>2× the original rate</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>3× the original rate</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>4× the original rate</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>8× the original rate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPIC 7: Acids, Bases, Salts ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh7">
+      <span class="q-section-icon">🔴</span>
+      <div class="q-section-title">Topic 7 — Acids, Bases &amp; Salts</div>
+      <div class="q-section-count">Q61–Q70</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q61</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">What ion is responsible for the acidic properties of an acid in aqueous solution?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>H⁺ (hydrogen ion)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>OH⁻ (hydroxide ion)</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Cl⁻ (chloride ion)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Na⁺ (sodium ion)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q62</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">What are the products when zinc reacts with dilute sulfuric acid?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Zinc sulfate + oxygen</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Zinc sulfate + hydrogen</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Zinc oxide + water</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Zinc chloride + hydrogen</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q63</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Describe how you would prepare a pure, dry sample of copper(II) sulfate crystals starting from copper(II) oxide and dilute sulfuric acid.</span>
+        <span class="q-marks">[5]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (5 marks):</strong><br>
+          • Add excess copper(II) oxide to warm dilute sulfuric acid and stir [1]<br>
+          • Filter to remove excess unreacted copper(II) oxide [1]<br>
+          • Heat the blue filtrate (copper sulfate solution) to evaporate until saturated [1]<br>
+          • Leave to cool and crystallise; filter to collect crystals [1]<br>
+          • Pat dry with filter paper / leave in warm oven to dry (do not overheat — may lose water of crystallisation) [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q64</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">A solution has a pH of 2. Which statement is correct?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>The solution is alkaline with a high OH⁻ concentration</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>The solution is neutral</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>The solution is strongly acidic with a high H⁺ concentration</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>The solution is weakly acidic</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q65</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which of the following is a strong acid?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Ethanoic acid (vinegar)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Hydrochloric acid</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Citric acid</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Carbonic acid</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q66</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Write a balanced ionic equation for the reaction between dilute hydrochloric acid and sodium carbonate solution, including state symbols.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • Full equation: 2HCl(aq) + Na₂CO₃(aq) → 2NaCl(aq) + H₂O(l) + CO₂(g) [1]<br>
+          • Ionic: 2H⁺(aq) + CO₃²⁻(aq) → H₂O(l) + CO₂(g) [2] (−1 for wrong/missing state symbols)
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q67</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Universal indicator turns green. The pH of the solution is approximately:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>pH 2</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>pH 4</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>pH 7</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>pH 10</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q68</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Explain the difference between a strong acid and a concentrated acid, using ethanoic acid and hydrochloric acid at the same concentration as examples.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Strong acid = fully ionised in solution (all molecules produce H⁺) [1]<br>
+          • Weak acid = partially/incompletely ionised in solution (only some molecules produce H⁺) [1]<br>
+          • HCl is strong: HCl → H⁺ + Cl⁻ (100%) → lower pH at same concentration [1]<br>
+          • CH₃COOH is weak: CH₃COOH ⇌ CH₃COO⁻ + H⁺ (partial) → higher pH at same concentration [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q69</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which method is used to prepare an insoluble salt like barium sulfate?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Titration</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Reacting acid with excess metal</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Precipitation (mixing two solutions)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Crystallisation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q70</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Ammonium nitrate is used as a fertiliser. Write the equation for its preparation from ammonia and nitric acid. Explain why ammonium nitrate is useful as a fertiliser.</span>
+        <span class="q-marks">[3]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (3 marks):</strong><br>
+          • NH₃ + HNO₃ → NH₄NO₃ [1]<br>
+          • Ammonium nitrate contains nitrogen (from both NH₄⁺ and NO₃⁻) [1]<br>
+          • Nitrogen is needed for plant growth / protein synthesis / promotes leaf growth [1]
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---- TOPICS 8-12: Remaining questions ---- -->
+  <div class="q-section reveal">
+    <div class="q-section-header gh8">
+      <span class="q-section-icon">🔁</span>
+      <div class="q-section-title">Topics 8–12 — Periodic Table, Metals, Environment, Organic &amp; Analysis</div>
+      <div class="q-section-count">Q71–Q100</div>
+    </div>
+
+    <!-- Q71-80: Periodic Table -->
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q71</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Group 1 metals react with water to form:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Metal oxide + oxygen</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Metal hydroxide + hydrogen</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Metal salt + water</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Metal oxide + hydrogen</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q72</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which halogen is most reactive?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Fluorine (F)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Chlorine (Cl)</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Bromine (Br)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Iodine (I)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q73</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Chlorine water is added to potassium bromide solution. Describe the observation and explain what has happened in terms of oxidation/reduction.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Observation: solution turns orange/brown [1]<br>
+          • Cl₂ + 2KBr → 2KCl + Br₂ / Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂ [1]<br>
+          • Chlorine is reduced (gains electrons) from 0 to −1 state [1]<br>
+          • Bromide is oxidised (loses electrons) from −1 to 0; Cl₂ is a stronger oxidising agent than Br₂ [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q74</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">What property is characteristic of ALL transition metals (not Group 1)?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>They are soft and have low densities</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>They react vigorously with cold water</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>They form coloured compounds and can act as catalysts</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>They all have a fixed oxidation state of +2</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q75-80: Metals -->
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q75</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which metal is extracted by electrolysis because it is too reactive to be reduced by carbon?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Iron</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Zinc</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Aluminium</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Copper</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q76</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Explain why steel is harder than pure iron and give TWO uses of stainless steel.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Pure iron has layers of atoms that slide over each other easily [1]<br>
+          • In steel, carbon atoms (different size) disrupt the regular layers, making it harder for layers to slide → steel is harder [1]<br>
+          • Uses of stainless steel: cutlery / surgical instruments / kitchen sinks / food processing equipment (any 2) [2]
+        </div>
+      </div>
+    </div>
+
+    <!-- Q77-80: Environment -->
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q77</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which gas is the main cause of acid rain?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Carbon dioxide</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Sulfur dioxide</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Nitrogen gas</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Argon</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q78</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">State the conditions for the Haber process and explain why a compromise temperature of 450°C is used rather than a very low or very high temperature.</span>
+        <span class="q-marks">[5]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (5 marks):</strong><br>
+          • Conditions: 450°C temperature, 200 atm pressure, iron catalyst, N₂:H₂ ratio = 1:3 [2]<br>
+          • N₂ + 3H₂ ⇌ 2NH₃ (forward reaction is exothermic) [1]<br>
+          • Very low temperature: yield of NH₃ would be high but rate too slow → not economically viable [1]<br>
+          • Very high temperature: rate is fast but equilibrium shifts to left (less NH₃) → lower yield [1]<br>
+          • 450°C = compromise: acceptable rate AND acceptable yield
+        </div>
+      </div>
+    </div>
+
+    <!-- Q79-90: Organic Chemistry -->
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q79</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">What is the general formula of alkenes?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>CₙH₂ₙ₊₂</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>CₙH₂ₙ</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>CₙH₂ₙ₋₂</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>CₙHₙ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q80</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Ethanol can be produced by fermentation. What are the raw material and conditions needed?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Ethene + water; 300°C; acid catalyst</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Glucose + oxygen; 37°C; yeast</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Glucose; ~30°C; yeast; no oxygen (anaerobic)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Methane + water; high temperature; nickel catalyst</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q81</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Compare the manufacture of ethanol by (a) fermentation and (b) hydration of ethene. Discuss raw materials, conditions, rate, and sustainability.</span>
+        <span class="q-marks">[6]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (6 marks):</strong><br>
+          • Fermentation: raw material = glucose (from renewable crops); hydration: ethene (from crude oil — non-renewable) [1]<br>
+          • Fermentation: ~30°C, yeast, anaerobic (slow batch process); Hydration: 300°C, H₃PO₄ catalyst, 65 atm (continuous) [1]<br>
+          • Fermentation is much slower; hydration gives faster continuous production [1]<br>
+          • Fermentation produces dilute impure ethanol needing distillation; hydration gives purer ethanol directly [1]<br>
+          • Fermentation is renewable/sustainable; hydration depletes finite fossil fuel resources [1]<br>
+          • Fermentation is cheaper in less-developed countries; hydration needs expensive industrial infrastructure [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q82</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">Which reagent is used to test for a C=C double bond in an alkene?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Limewater</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Bromine water</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Universal indicator</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Sodium hydroxide solution</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q83</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Cracking of long-chain alkanes produces:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Only shorter alkanes</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Only alkenes</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Carbon dioxide and water</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Shorter alkanes AND alkenes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q84</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Nylon is a condensation polymer. (a) What type of monomers form nylon? (b) What small molecule is eliminated? (c) Give one property and one use of nylon.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • (a) A diamine and a dicarboxylic acid (or diacid chloride) [1]<br>
+          • (b) Water (H₂O) is eliminated when the monomers join [1]<br>
+          • (c) Property: strong, tough, resistant to abrasion, low friction, can be drawn into fibres [1]<br>
+          • Use: ropes, clothing (stockings), toothbrush bristles, gears/bearings [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q85</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">What functional group is present in carboxylic acids?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>–OH</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>–NH₂</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>–COOH</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>–CHO</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q86-100: Analysis -->
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q86</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">A glowing splint is inserted into a gas jar and relights. Which gas is present?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Hydrogen</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Carbon dioxide</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Oxygen</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Nitrogen</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q87</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-easy">Easy</span>
+        <span class="q-text">A flame test gives a YELLOW flame. Which metal ion is present?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Potassium (K⁺) — lilac</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Sodium (Na⁺) — yellow</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Lithium (Li⁺) — red</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Copper (Cu²⁺) — blue-green</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q88</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">In chromatography, a spot travels 6.0 cm and the solvent front travels 8.0 cm. What is the Rf value?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Answer:</strong><br>
+          Rf = distance moved by spot / distance moved by solvent = 6.0 / 8.0 = <strong>0.75</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q89</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Describe tests to distinguish between Fe²⁺ and Fe³⁺ ions in solution. Include reagent, observation for each, and write ionic equations for each.</span>
+        <span class="q-marks">[6]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (6 marks):</strong><br>
+          • Reagent: add aqueous NaOH to separate samples [1]<br>
+          • Fe²⁺: green precipitate → Fe²⁺ + 2OH⁻ → Fe(OH)₂ (green ppt) [1]<br>
+          • Green ppt slowly turns brown/rust on standing (oxidised by atmospheric O₂) [1]<br>
+          • Fe³⁺: red-brown precipitate immediately → Fe³⁺ + 3OH⁻ → Fe(OH)₃ (red-brown ppt) [1]<br>
+          • Both precipitates insoluble in excess NaOH [1]<br>
+          • Precipitate not formed if NaOH added to solid — must be in solution; mark for clear procedure [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q90</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which ion gives a white precipitate with aqueous silver nitrate (acidified with HNO₃) that dissolves in concentrated ammonia?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="A">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Cl⁻ (chloride)</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Br⁻ (bromide) — cream ppt, partially soluble</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>I⁻ (iodide) — yellow ppt, insoluble</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>SO₄²⁻ — white ppt with BaCl₂, not AgNO₃</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Q91-100: Mixed Hard -->
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q91</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">A white powder may contain Na₂CO₃, BaSO₄, and NH₄Cl. Outline a systematic scheme to identify which compounds are present.</span>
+        <span class="q-marks">[6]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (6 marks):</strong><br>
+          • Add water: BaSO₄ is insoluble → white residue confirms BaSO₄; filter [1]<br>
+          • Flame test on filtrate: yellow flame → Na⁺ present → Na₂CO₃ may be present [1]<br>
+          • Add dilute HCl to filtrate: effervescence/CO₂ → limewater turns milky → CO₃²⁻ → confirms Na₂CO₃ [1]<br>
+          • Add NaOH to filtrate and warm: pungent NH₃ gas; turns damp red litmus blue → NH₄⁺ → confirms NH₄Cl [1]<br>
+          • To confirm BaSO₄: acidify with HNO₃, add Ba(NO₃)₂ solution — no extra precipitate [1]<br>
+          • Award mark for logical order avoiding interference between tests [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q92</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">When Na₂CO₃ is heated with excess dilute HCl, CO₂ gas is produced. Which test identifies CO₂?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Burns with a squeaky pop</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Relights a glowing splint</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Turns limewater milky</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Bleaches damp litmus paper</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q93</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Iron(III) oxide (Fe₂O₃) is reduced by CO in a blast furnace: Fe₂O₃ + 3CO → 2Fe + 3CO₂. Calculate the mass of iron produced from 320 g of Fe₂O₃. (Ar: Fe=56, O=16)</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Mr Fe₂O₃ = (2×56) + (3×16) = 160 [1]<br>
+          • Moles Fe₂O₃ = 320/160 = 2.0 mol [1]<br>
+          • Moles Fe = 2 × 2.0 = 4.0 mol (from 1:2 ratio) [1]<br>
+          • Mass Fe = 4.0 × 56 = <strong>224 g</strong> [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q94</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Ethanoic acid reacts with ethanol in the presence of an acid catalyst to form ethyl ethanoate. This type of reaction is called:</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="B">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Addition reaction</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Esterification</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Substitution reaction</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Condensation polymerisation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q95</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Carbon dioxide is a greenhouse gas. Explain the greenhouse effect and discuss TWO consequences of increasing CO₂ levels in the atmosphere.</span>
+        <span class="q-marks">[5]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (5 marks):</strong><br>
+          • Sun's radiation (short wavelength) passes through atmosphere and warms Earth's surface [1]<br>
+          • Earth radiates heat (longer wavelength/infrared); CO₂ and other greenhouse gases absorb and re-emit this radiation back to Earth [1]<br>
+          • Increasing CO₂ traps more heat → global temperature rise (enhanced greenhouse effect) [1]<br>
+          • Consequence 1: Melting of polar ice caps → rising sea levels → flooding of low-lying areas [1]<br>
+          • Consequence 2: More extreme weather events (droughts, floods, storms) / disruption of ecosystems / loss of biodiversity [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q96</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-med">Medium</span>
+        <span class="q-text">Which process is used to separate crude oil into its useful fractions?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="D">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Simple distillation</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Chromatography</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Crystallisation</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Fractional distillation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q97</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">Describe the complete combustion of propane (C₃H₈). Write a balanced equation and identify the type of reaction. State why incomplete combustion is dangerous.</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • C₃H₈ + 5O₂ → 3CO₂ + 4H₂O [1]<br>
+          • Exothermic reaction [1]<br>
+          • Incomplete combustion produces CO (carbon monoxide) [1]<br>
+          • CO is toxic / colourless and odourless / binds to haemoglobin preventing O₂ transport → can cause death [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q98</span><span class="q-badge badge-mcq">MCQ</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">A student adds aqueous ammonia to a solution and gets a blue precipitate. Which cation was present?</span>
+        <span class="q-marks">[1]</span>
+      </div>
+      <div class="q-bottom">
+        <ul class="mcq-opts" data-correct="C">
+          <li class="mcq-opt" data-opt="A"><span class="opt-ltr">A</span>Fe³⁺ — gives red-brown ppt</li>
+          <li class="mcq-opt" data-opt="B"><span class="opt-ltr">B</span>Zn²⁺ — gives white ppt</li>
+          <li class="mcq-opt" data-opt="C"><span class="opt-ltr">C</span>Cu²⁺ — gives blue ppt (dissolves in excess to give deep blue)</li>
+          <li class="mcq-opt" data-opt="D"><span class="opt-ltr">D</span>Fe²⁺ — gives green ppt</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q99</span><span class="q-badge badge-calc">Calculation</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">A hydrocarbon is 85.7% C and 14.3% H by mass. Its Mr = 42. Find its molecular formula. (Ar: C=12, H=1)</span>
+        <span class="q-marks">[4]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (4 marks):</strong><br>
+          • Divide by Ar: C = 85.7/12 = 7.14; H = 14.3/1 = 14.3 [1]<br>
+          • Divide by smallest (7.14): C = 1; H = 2.0 → Empirical formula = CH₂ [1]<br>
+          • Mr of CH₂ = 14; n = 42/14 = 3 [1]<br>
+          • Molecular formula = <strong>C₃H₆</strong> (propene) [1]
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-badge badge-q">Q100</span><span class="q-badge badge-struct">Structured</span><span class="diff-tag diff-hard">Hard</span>
+        <span class="q-text">ULTIMATE CHALLENGE: An unknown aqueous solution X is colourless. When X is tested: (1) it does not react with HCl; (2) a white ppt forms with BaCl₂ acidified with HCl; (3) a flame test gives lilac/violet colour. Identify ion X, write the ionic equation for test (2), and name the precipitate formed.</span>
+        <span class="q-marks">[5]</span>
+      </div>
+      <div class="q-bottom">
+        <button class="ans-btn" onclick="revealAns(this)">🔑 Show Answer</button>
+        <div class="ans-box">
+          <strong>Model Answer (5 marks):</strong><br>
+          • Test 1 rules out CO₃²⁻ (would effervesce with HCl) [1]<br>
+          • Test 2: white precipitate with acidified BaCl₂ = SO₄²⁻ (sulfate) present [1]<br>
+          • Ionic equation: Ba²⁺(aq) + SO₄²⁻(aq) → BaSO₄(s) [1]<br>
+          • Precipitate = barium sulfate (BaSO₄) [1]<br>
+          • Flame test (lilac/violet) → K⁺ (potassium ion) present [1]<br>
+          • Solution X contains K₂SO₄ / potassium sulfate
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end q-section -->
+
+  <div style="text-align:center;margin-top:40px;padding:30px;background:var(--card);border:1px solid var(--card-border);border-radius:20px;">
+    <div style="font-family:'Orbitron',sans-serif;font-size:1.4rem;color:white;margin-bottom:10px;">🎓 100 Questions Complete!</div>
+    <div style="color:var(--muted);">Review any wrong answers — then attempt again without your notes. Repetition = Mastery.</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-tag">Get In Touch</div>
+    <div class="glow-line"></div>
+    <h2 class="section-title">Ask a <span>Question</span></h2>
+    <p class="section-desc">Confused about a topic? Want a worked example? Send us a message and we'll help you out.</p>
+  </div>
+  <div class="contact-card reveal">
+    <div class="contact-grid">
+      <input class="contact-input" type="text" placeholder="Your Name">
+      <input class="contact-input" type="email" placeholder="Email Address">
+      <input class="contact-input full" type="text" placeholder="Subject (e.g. Help with stoichiometry)">
+      <textarea class="contact-input full" placeholder="Your message or question..."></textarea>
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+      <button class="btn-primary" onclick="sendContact()">🚀 Send Message</button>
+    </div>
+    <div style="display:flex;gap:30px;justify-content:center;margin-top:40px;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:8px;">📧</div>
+        <div style="font-size:0.8rem;color:var(--muted);">support@chemlab.io</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:8px;">💬</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Discord Community</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:8px;">📚</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Cambridge 0620 Syllabus</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚗️ CHEMLAB</div>
+  <div>Cambridge IGCSE Chemistry 0620 · Complete Revision Platform · Syllabus 2026–2028</div>
+  <div style="margin-top:8px;opacity:0.6;font-size:0.78rem;">These notes are a study aid. Always refer to your official Cambridge syllabus for definitive content.</div>
+</footer>
+
+<script>
+/* ===== CUSTOM CURSOR ===== */
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',(e)=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+function animCursor(){cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;cursor.style.left=cx+'px';cursor.style.top=cy+'px';requestAnimationFrame(animCursor);}
+animCursor();
+
+/* ===== 3D WEBGL BACKGROUND ===== */
+const canvas=document.getElementById('bg-canvas');
+const gl=canvas.getContext('webgl');
+
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;if(gl)gl.viewport(0,0,canvas.width,canvas.height);}
+resize();window.addEventListener('resize',resize);
+
+const vsSource=`
+attribute vec4 aPos;attribute float aSize;attribute vec3 aColor;attribute float aSpeed;attribute float aPhase;
+uniform float uTime;uniform vec2 uRes;
+varying vec3 vColor;varying float vAlpha;
+void main(){
+  float t=uTime*aSpeed+aPhase;
+  vec4 p=aPos;
+  p.x+=sin(t*1.3)*0.08;p.y+=cos(t*0.9)*0.06;p.z+=sin(t*0.7)*0.05;
+  gl_Position=p;gl_PointSize=aSize*(0.8+0.4*sin(t));
+  vColor=aColor;vAlpha=0.3+0.3*sin(t*0.5);
+}`;
+const fsSource=`
+precision mediump float;
+varying vec3 vColor;varying float vAlpha;
+void main(){
+  float d=distance(gl_PointCoord,vec2(0.5));
+  if(d>0.5)discard;
+  float a=1.0-smoothstep(0.3,0.5,d);
+  gl_FragColor=vec4(vColor,a*vAlpha);
+}`;
+
+function makeShader(src,type){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+const prog=gl.createProgram();
+gl.attachShader(prog,makeShader(vsSource,gl.VERTEX_SHADER));
+gl.attachShader(prog,makeShader(fsSource,gl.FRAGMENT_SHADER));
+gl.linkProgram(prog);gl.useProgram(prog);
+
+const N=200;
+const pos=[],sizes=[],colors=[],speeds=[],phases=[];
+const palettes=[[0,0.96,1],[1,0,1],[0.22,1,0.08],[1,0.84,0],[1,0.42,0]];
+for(let i=0;i<N;i++){
+  pos.push((Math.random()-0.5)*2,(Math.random()-0.5)*2,(Math.random()-0.5)*2,1);
+  sizes.push(2+Math.random()*6);
+  const c=palettes[Math.floor(Math.random()*palettes.length)];
+  colors.push(...c);
+  speeds.push(0.3+Math.random()*0.7);
+  phases.push(Math.random()*Math.PI*2);
+}
+
+function buf(data,attrib,size){
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(prog,attrib);
+  gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,0,0);
+}
+buf(pos,'aPos',4);buf(sizes,'aSize',1);buf(colors,'aColor',3);buf(speeds,'aSpeed',1);buf(phases,'aPhase',1);
+
+const uTime=gl.getUniformLocation(prog,'uTime');
+const uRes=gl.getUniformLocation(prog,'uRes');
+
+gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+
+let t0=performance.now();
+function draw(ts){
+  const t=(ts-t0)/1000;
+  gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.uniform1f(uTime,t);gl.uniform2f(uRes,canvas.width,canvas.height);
+  gl.drawArrays(gl.POINTS,0,N);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+/* ===== NOTES TOGGLE ===== */
+function toggleNotes(header){
+  const body=header.nextElementSibling;
+  const icon=header.querySelector('.notes-toggle');
+  body.classList.toggle('open');
+  icon.style.transform=body.classList.contains('open')?'rotate(180deg)':'rotate(0deg)';
+}
+
+/* ===== MCQ INTERACTION ===== */
+let answered=0,correct=0,wrong=0;
+const TOTAL_MCQ=document.querySelectorAll('.mcq-opts').length;
+
+document.querySelectorAll('.mcq-opts').forEach(ul=>{
+  const correctOpt=ul.dataset.correct;
+  ul.querySelectorAll('.mcq-opt').forEach(li=>{
+    li.addEventListener('click',()=>{
+      if(ul.dataset.done)return;
+      ul.dataset.done='1';
+      ul.querySelectorAll('.mcq-opt').forEach(x=>x.classList.add('locked'));
+      answered++;
+      const chosen=li.dataset.opt;
+      if(chosen===correctOpt){
+        li.classList.add('correct');correct++;
+        showToast('⚡ Correct! +1 streak');
+        burst(li);
+      } else {
+        li.classList.add('wrong');wrong++;
+        ul.querySelector(`[data-opt="${correctOpt}"]`).classList.add('correct');
+        showToast('❌ Not quite! Check the answer below');
+      }
+      updateScore();
+    });
+  });
+});
+
+function updateScore(){
+  document.getElementById('sc-ans').textContent=answered;
+  document.getElementById('sc-cor').textContent=correct;
+  document.getElementById('sc-wrg').textContent=wrong;
+  const pct=Math.round((answered/TOTAL_MCQ)*100);
+  document.getElementById('pct-lbl').textContent=pct+'%';
+  document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+/* ===== REVEAL ANSWER ===== */
+function revealAns(btn){
+  const box=btn.nextElementSibling;
+  if(box.classList.contains('show')){
+    box.classList.remove('show');btn.textContent='🔑 Show Answer';
+  } else {
+    box.classList.add('show');btn.textContent='🔒 Hide Answer';
+  }
+}
+
+/* ===== TOAST ===== */
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+/* ===== PARTICLE BURST ===== */
+function burst(el){
+  const rect=el.getBoundingClientRect();
+  for(let i=0;i<8;i++){
+    const p=document.createElement('div');
+    p.style.cssText=`position:fixed;width:8px;height:8px;border-radius:50%;background:${['#00f5ff','#39ff14','#ffd700'][Math.floor(Math.random()*3)]};left:${rect.left+rect.width/2}px;top:${rect.top+rect.height/2}px;pointer-events:none;z-index:9999;transition:all 0.8s ease-out;`;
+    document.body.appendChild(p);
+    const angle=Math.random()*Math.PI*2;
+    const dist=60+Math.random()*80;
+    setTimeout(()=>{p.style.transform=`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px)`;p.style.opacity='0';},10);
+    setTimeout(()=>p.remove(),900);
+  }
+}
+
+/* ===== CONTACT ===== */
+function sendContact(){showToast('✅ Message sent! We\'ll reply soon.');}
+
+/* ===== SCROLL REVEAL ===== */
+const revealObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+
+/* ===== SMOOTH NAV ===== */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+  });
+});
+
+/* ===== CURSOR HOVER EFFECT ===== */
+document.querySelectorAll('button,a,.mcq-opt,.notes-header,.topic-tab').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='40px';cursor.style.height='40px';cursor.style.borderColor='var(--neon-pink)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='20px';cursor.style.height='20px';cursor.style.borderColor='var(--neon-cyan)';});
+});
+</script>
+</body>
+</html>

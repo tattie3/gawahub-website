@@ -1,0 +1,898 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Learn — Tats Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --chem: #00c9a7;
+    --chem2: #00e5c4;
+    --phys: #f7b731;
+    --phys2: #ffd166;
+    --accent: #e94560;
+    --deep: #0d0d1a;
+    --mid: #13132b;
+    --card: #181830;
+    --border: rgba(255,255,255,0.07);
+    --white: #eef2ff;
+    --radius: 18px;
+    --fs: 'Fredoka One', cursive;
+    --fb: 'Nunito', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--fb);
+    background: var(--deep);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── BG ── */
+  .bg-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .glow { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.09; }
+  .g1 { width: 600px; height: 600px; background: var(--chem); top: -150px; left: -150px; animation: drift 14s ease-in-out infinite alternate; }
+  .g2 { width: 500px; height: 500px; background: var(--phys); bottom: -100px; right: -100px; animation: drift 11s ease-in-out infinite alternate-reverse; }
+  .g3 { width: 350px; height: 350px; background: var(--accent); top: 45%; left: 45%; animation: drift 18s ease-in-out infinite alternate; }
+  @keyframes drift { to { transform: translate(50px, 40px) scale(1.1); } }
+
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(0,201,167,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,201,167,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(13,13,26,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,201,167,0.18);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw; height: 66px;
+  }
+  .nav-logo {
+    font-family: var(--fs); font-size: 1.5rem;
+    background: linear-gradient(90deg, var(--chem), var(--phys));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+  .nav-links a { color: var(--white); text-decoration: none; font-weight: 700; font-size: 0.9rem; opacity: 0.65; transition: opacity .2s, color .2s; }
+  .nav-links a:hover { opacity: 1; color: var(--chem); }
+  .nav-back {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(0,201,167,0.12); border: 1px solid rgba(0,201,167,0.3);
+    color: var(--chem); border-radius: 50px; padding: 7px 18px;
+    font-weight: 800; font-size: 0.85rem; text-decoration: none;
+    transition: background .2s, transform .2s;
+  }
+  .nav-back:hover { background: rgba(0,201,167,0.22); transform: translateX(-3px); }
+
+  /* ── HERO ── */
+  .page-hero {
+    position: relative; z-index: 1;
+    text-align: center; padding: 80px 5vw 60px;
+    background: linear-gradient(180deg, rgba(0,201,167,0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-hero .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(0,201,167,0.15), rgba(247,183,49,0.15));
+    border: 1px solid rgba(0,201,167,0.35);
+    border-radius: 50px; padding: 6px 22px;
+    font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--chem); margin-bottom: 22px;
+    animation: fadein .7s ease both;
+  }
+  .page-hero h1 {
+    font-family: var(--fs); font-size: clamp(2.4rem, 6vw, 4.5rem);
+    line-height: 1.1; margin-bottom: 20px; animation: slideup .8s ease both .1s;
+  }
+  .page-hero h1 span {
+    background: linear-gradient(90deg, var(--chem), var(--phys), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .page-hero p {
+    max-width: 620px; margin: 0 auto 40px; font-size: 1.05rem;
+    line-height: 1.7; opacity: .75; animation: slideup .8s ease both .2s;
+  }
+  @keyframes fadein { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideup { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
+
+  /* ── SUBJECT TABS ── */
+  .tab-bar {
+    position: sticky; top: 66px; z-index: 100;
+    display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+    padding: 18px 5vw;
+    background: rgba(13,13,26,0.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 10px 26px; border-radius: 50px;
+    font-family: var(--fb); font-weight: 800; font-size: 0.92rem;
+    border: 2px solid transparent; cursor: pointer; transition: all .25s;
+    background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6);
+  }
+  .tab:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+  .tab.active-all   { background: linear-gradient(135deg,var(--chem),var(--phys)); color: #fff; }
+  .tab.active-chem  { background: var(--chem); color: #0d0d1a; }
+  .tab.active-phys  { background: var(--phys); color: #0d0d1a; }
+  .tab.active-res   { background: var(--accent); color: #fff; }
+  .tab.active-start { background: linear-gradient(135deg,#7b61ff,#e94560); color: #fff; }
+
+  /* ── MAIN ── */
+  main { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; padding: 0 5vw 80px; }
+
+  /* ── SECTION HEADERS ── */
+  .sec-head { padding: 70px 0 32px; }
+  .sec-label { font-size: .75rem; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+  .sec-label.c { color: var(--chem); }
+  .sec-label.p { color: var(--phys); }
+  .sec-label.r { color: var(--accent); }
+  .sec-label.s { color: #b09ffc; }
+  .sec-head h2 { font-family: var(--fs); font-size: clamp(1.7rem,3.5vw,2.6rem); margin-bottom: 12px; }
+  .sec-head p  { font-size:.97rem; opacity:.7; line-height:1.7; max-width:600px; }
+
+  /* ── VIDEO GRID ── */
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 26px; }
+  .video-grid.featured { grid-template-columns: repeat(auto-fill, minmax(420px,1fr)); }
+
+  /* ── VIDEO CARD ── */
+  .v-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .3s, border-color .3s, box-shadow .3s;
+  }
+  .v-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.18); box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+  .v-card.chem:hover { border-color: rgba(0,201,167,0.5); box-shadow: 0 20px 60px rgba(0,201,167,.15); }
+  .v-card.phys:hover { border-color: rgba(247,183,49,0.5); box-shadow: 0 20px 60px rgba(247,183,49,.12); }
+
+  /* ── VIDEO THUMBNAIL / EMBED ── */
+  .v-thumb {
+    position: relative;
+    padding-bottom: 56.25%;
+    background: #0d0d1a;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .v-thumb iframe {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    /* iframes start hidden until clicked */
+  }
+  /* Thumbnail image shown before play */
+  .v-thumb .v-thumb-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s;
+    pointer-events: none;
+  }
+  .v-card:hover .v-thumb-img { transform: scale(1.04); }
+  .v-thumb .v-overlay {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(13,13,26,0.45);
+    transition: background .3s; cursor: pointer;
+  }
+  .v-thumb .v-overlay:hover { background: rgba(13,13,26,0.25); }
+  .v-thumb.playing .v-overlay { display: none; }
+  .v-thumb.playing .v-thumb-img { display: none; }
+  .play-btn {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(0,201,167,0.92);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: #fff;
+    transition: transform .25s, box-shadow .25s;
+    box-shadow: 0 0 40px rgba(0,201,167,0.5);
+  }
+  .v-card.phys .play-btn { background: rgba(247,183,49,0.92); box-shadow: 0 0 40px rgba(247,183,49,0.5); }
+  .v-thumb .v-overlay:hover .play-btn { transform: scale(1.12); }
+
+  /* ── VIDEO BODY ── */
+  .v-body { padding: 22px 22px 24px; flex: 1; display: flex; flex-direction: column; }
+  .v-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+  .v-tag { font-size: .7rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 50px; }
+  .v-tag.beginner     { background: rgba(0,201,167,0.15); color: var(--chem); border: 1px solid rgba(0,201,167,.25); }
+  .v-tag.intermediate { background: rgba(247,183,49,0.15); color: var(--phys); border: 1px solid rgba(247,183,49,.25); }
+  .v-tag.advanced     { background: rgba(233,69,96,0.15); color: var(--accent); border: 1px solid rgba(233,69,96,.25); }
+  .v-tag.chem-tag     { background: rgba(0,201,167,0.1); color: var(--chem); border: 1px solid rgba(0,201,167,.2); }
+  .v-tag.phys-tag     { background: rgba(247,183,49,0.1); color: var(--phys); border: 1px solid rgba(247,183,49,.2); }
+  .v-title { font-family: var(--fs); font-size: 1.15rem; margin-bottom: 10px; line-height: 1.3; color: var(--white); }
+  .v-title a { color: inherit; text-decoration: none; }
+  .v-title a:hover { color: var(--chem); }
+  .v-card.phys .v-title a:hover { color: var(--phys); }
+  .v-desc { font-size: .88rem; opacity: .68; line-height: 1.65; flex: 1; }
+  .v-meta { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .v-channel { font-size: .78rem; font-weight: 700; opacity: .55; text-decoration: none; color: inherit; }
+  .v-channel:hover { opacity: 1; color: var(--chem); }
+  .v-duration { font-size: .78rem; font-weight: 700; opacity: .45; margin-left: auto; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* ── RESOURCE CARDS ── */
+  .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 22px; }
+  .r-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px 26px; display: flex; flex-direction: column; gap: 14px;
+    transition: transform .3s, border-color .3s; text-decoration: none; color: inherit;
+    position: relative; overflow: hidden;
+  }
+  .r-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .r-card.a::before { background: linear-gradient(90deg,#4f46e5,#7c3aed); }
+  .r-card.b::before { background: linear-gradient(90deg,var(--chem),var(--chem2)); }
+  .r-card.c::before { background: linear-gradient(90deg,var(--phys),var(--phys2)); }
+  .r-card.d::before { background: linear-gradient(90deg,var(--accent),#ff6b6b); }
+  .r-card.e::before { background: linear-gradient(90deg,#06d6a0,#118ab2); }
+  .r-card.f::before { background: linear-gradient(90deg,#f77f00,#fcbf49); }
+  .r-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
+  .r-icon { font-size: 2rem; }
+  .r-name { font-family: var(--fs); font-size: 1.1rem; }
+  .r-desc { font-size: .88rem; opacity: .68; line-height: 1.6; flex:1; }
+  .r-link { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; font-weight: 800; color: var(--chem); opacity: .8; margin-top: 4px; transition: opacity .2s, gap .2s; }
+  .r-card:hover .r-link { opacity: 1; gap: 10px; }
+
+  /* ── QUICK FACTS ── */
+  .facts-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin: 40px 0; }
+  .fact-pill {
+    background: linear-gradient(135deg, rgba(0,201,167,0.07), rgba(247,183,49,0.05));
+    border: 1px solid rgba(0,201,167,0.15); border-radius: 14px; padding: 20px 22px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .fact-pill .fp-icon { font-size: 1.8rem; flex-shrink: 0; }
+  .fact-pill .fp-text { font-size: .87rem; line-height: 1.55; opacity: .78; }
+  .fact-pill .fp-text strong { color: var(--phys); }
+
+  /* ── CHAPTER TRACK ── */
+  .track { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
+  .track-head { display: flex; align-items: center; gap: 16px; padding: 20px 26px; cursor: pointer; user-select: none; transition: background .2s; }
+  .track-head:hover { background: rgba(255,255,255,0.03); }
+  .track-num { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--fs); font-size: 1rem; }
+  .track-num.c { background: rgba(0,201,167,0.2); color: var(--chem); }
+  .track-num.p { background: rgba(247,183,49,0.2); color: var(--phys); }
+  .track-title { font-family: var(--fs); font-size: 1.05rem; flex: 1; }
+  .track-badge { font-size: .72rem; font-weight: 800; padding: 3px 10px; border-radius: 50px; }
+  .track-badge.c { background: rgba(0,201,167,0.15); color: var(--chem); }
+  .track-badge.p { background: rgba(247,183,49,0.15); color: var(--phys); }
+  .track-chevron { font-size: 1rem; opacity: .4; transition: transform .3s; }
+  .track.open .track-chevron { transform: rotate(180deg); }
+  .track-body { display: none; padding: 0 26px 24px; }
+  .track.open .track-body { display: block; }
+  .track-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .track-steps li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    font-size: .9rem; opacity: .8; transition: opacity .2s, background .2s; cursor: pointer;
+  }
+  .track-steps li:hover { background: rgba(255,255,255,0.07); opacity: 1; }
+  .step-icon { font-size: 1.1rem; }
+  .step-text { flex: 1; }
+  .step-tag { font-size: .7rem; font-weight: 800; padding: 2px 8px; border-radius: 50px; opacity: .7; }
+  .step-tag.vid      { background: rgba(233,69,96,0.2); color: var(--accent); }
+  .step-tag.read     { background: rgba(176,159,252,0.2); color: #b09ffc; }
+  .step-tag.practice { background: rgba(0,201,167,0.2); color: var(--chem); }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(0,201,167,0.12), rgba(247,183,49,0.08));
+    border: 1px solid rgba(0,201,167,0.25); border-radius: 24px;
+    padding: 60px 50px; text-align: center; margin: 70px 0 20px; position: relative; overflow: hidden;
+  }
+  .cta-banner::before { content: '⚛'; position: absolute; font-size: 12rem; opacity: .03; top: -30px; right: -30px; pointer-events: none; animation: spin 40s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .cta-banner h2 { font-family: var(--fs); font-size: 2rem; margin-bottom: 14px; }
+  .cta-banner p { opacity: .72; font-size: 1rem; line-height: 1.7; max-width: 520px; margin: 0 auto 32px; }
+  .btn-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn { padding: 13px 32px; border-radius: 50px; font-weight: 800; font-size: .95rem; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: transform .2s, box-shadow .2s; }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,.4); }
+  .btn-green { background: linear-gradient(135deg,var(--chem),#00a88c); color: #fff; }
+  .btn-gold  { background: linear-gradient(135deg,var(--phys),#e8a000); color: #0d0d1a; }
+  .btn-ghost { background: transparent; border: 2px solid rgba(255,255,255,.25); color: var(--white); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.vis { opacity: 1; transform: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center; padding: 36px 5vw;
+    background: rgba(0,0,0,.25); border-top: 1px solid var(--border);
+    font-size: .88rem; opacity: .45;
+  }
+
+  /* ── HIDDEN ── */
+  .sec-hidden { display: none !important; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .video-grid.featured { grid-template-columns: 1fr; }
+    .cta-banner { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="glow g3"></div>
+</div>
+<div class="grid-bg"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="the gawa  school hub.html" class="nav-logo">⚗️ Tats Learning Hub</a>
+  <ul class="nav-links">
+    <li><a href="the gawa  school hub.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="the chemistry .html">Chemistry</a></li>
+    <li><a href="phsics.html">Physics</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+  <a href="about.html" class="nav-back">← Back to About</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="page-hero">
+  <div class="badge">🎓 Deep Dive Learning Centre</div>
+  <h1>Explore. Watch. <span>Understand.</span></h1>
+  <p>Hand-picked videos from the world's best science educators — organised by topic, labelled by difficulty, and built to take you from confused to confident.</p>
+</div>
+
+<!-- ── TABS ── -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab active-all"  data-filter="all">🌌 All Topics</button>
+  <button class="tab"             data-filter="chem">⚗️ Chemistry</button>
+  <button class="tab"             data-filter="phys">⚡ Physics</button>
+  <button class="tab"             data-filter="res">🔗 Resources &amp; Tools</button>
+  <button class="tab"             data-filter="start">🚀 Start Here (Beginners)</button>
+</div>
+
+<main>
+
+<!-- ═══════════════ START HERE ═══════════════ -->
+<div class="sec-start" data-section="start">
+  <div class="sec-head reveal">
+    <div class="sec-label s">🚀 Perfect First Stop</div>
+    <h2>Start Here — Beginners Welcome</h2>
+    <p>Never studied chemistry or physics before? These videos are your launchpad. Friendly, clear, and designed to hook you from the very first minute.</p>
+  </div>
+
+  <div class="video-grid featured">
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="FSyAehMdpyI">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/FSyAehMdpyI/mqdefault.jpg" alt="Intro to Chemistry"/>
+        <iframe data-src="https://www.youtube.com/embed/FSyAehMdpyI?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag chem-tag">Chemistry</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=FSyAehMdpyI" target="_blank" rel="noopener">Intro to Chemistry — What Is It Even? ↗</a></div>
+        <p class="v-desc">A perfect starting point. CrashCourse explains what chemistry is, why it matters, and gives you the big picture before you dive into anything detailed.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="v-channel">📺 CrashCourse Chemistry ↗</a><span class="v-duration">⏱ 11 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="ZM8ECpBuQYE">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/ZM8ECpBuQYE/mqdefault.jpg" alt="Intro to Physics"/>
+        <iframe data-src="https://www.youtube.com/embed/ZM8ECpBuQYE?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag phys-tag">Physics</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=ZM8ECpBuQYE" target="_blank" rel="noopener">Intro to Physics — Motion in a Straight Line ↗</a></div>
+        <p class="v-desc">Your first physics lesson! Dr. Shini explains how physics describes the world with numbers. Displacement, velocity, and acceleration — the foundation of everything that moves.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="v-channel">📺 CrashCourse Physics ↗</a><span class="v-duration">⏱ 9 min</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="facts-strip" style="margin-top:36px;">
+    <div class="fact-pill reveal"><div class="fp-icon">🧠</div><div class="fp-text">You don't need to be "smart" — you just need to <strong>be curious and willing to rewatch</strong> until it clicks.</div></div>
+    <div class="fact-pill reveal"><div class="fp-icon">📝</div><div class="fp-text">Pause the video whenever you need. Science is better <strong>understood slowly</strong> than rushed through.</div></div>
+    <div class="fact-pill reveal"><div class="fp-icon">💬</div><div class="fp-text">If something confuses you — <strong>that's normal and great!</strong> Confusion is the first step to real understanding.</div></div>
+    <div class="fact-pill reveal"><div class="fp-icon">🔁</div><div class="fp-text">Watch each video <strong>at least twice</strong> — you'll always catch something new the second time around.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════ CHEMISTRY ═══════════════ -->
+<div class="sec-chem" data-section="chem" id="chem">
+  <div class="sec-head reveal">
+    <div class="sec-label c">⚗️ Chemistry</div>
+    <h2>Chemistry — From Atoms to Reactions</h2>
+    <p>Sorted by topic. Watch in order for a structured journey, or jump to whatever you're studying right now.</p>
+  </div>
+
+  <div style="margin-bottom:40px;">
+    <div class="track open reveal">
+      <div class="track-head" onclick="toggleTrack(this)">
+        <div class="track-num c">1</div>
+        <div class="track-title">Unit 1 — Atomic Structure & the Periodic Table</div>
+        <span class="track-badge c">4 lessons</span>
+        <span class="track-chevron">▼</span>
+      </div>
+      <div class="track-body">
+        <ul class="track-steps">
+          <li onclick="window.open('https://www.youtube.com/watch?v=FSyAehMdpyI','_blank')"><span class="step-icon">⚛️</span><span class="step-text">What is an Atom? — CrashCourse ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/chemistry/atomic-structure-and-properties','_blank')"><span class="step-icon">🧩</span><span class="step-text">Protons, Neutrons & Electrons — Khan Academy ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.youtube.com/watch?v=0RRVV4Diomg','_blank')"><span class="step-icon">📊</span><span class="step-text">The Periodic Table Explained — CrashCourse ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.bbc.co.uk/bitesize/guides/z8kkqhv/revision/1','_blank')"><span class="step-icon">📖</span><span class="step-text">Atomic Structure Revision Notes — BBC Bitesize ↗</span><span class="step-tag read">READ</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="track reveal">
+      <div class="track-head" onclick="toggleTrack(this)">
+        <div class="track-num c">2</div>
+        <div class="track-title">Unit 2 — Chemical Bonding</div>
+        <span class="track-badge c">3 lessons</span>
+        <span class="track-chevron">▼</span>
+      </div>
+      <div class="track-body">
+        <ul class="track-steps">
+          <li onclick="window.open('https://www.youtube.com/watch?v=vCDlvfKjQBk','_blank')"><span class="step-icon">🔗</span><span class="step-text">Ionic vs Covalent Bonds — Tyler DeWitt ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/chemistry/chemical-bonds','_blank')"><span class="step-icon">🧲</span><span class="step-text">Metallic Bonding — Khan Academy ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/chemistry/chemical-bonds/ionic-covalent-and-metallic-bonds/e/ionic-bonds','_blank')"><span class="step-icon">✏️</span><span class="step-text">Bonding Practice Questions — Khan Academy ↗</span><span class="step-tag practice">PRACTICE</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="track reveal">
+      <div class="track-head" onclick="toggleTrack(this)">
+        <div class="track-num c">3</div>
+        <div class="track-title">Unit 3 — Chemical Reactions & Stoichiometry</div>
+        <span class="track-badge c">5 lessons</span>
+        <span class="track-chevron">▼</span>
+      </div>
+      <div class="track-body">
+        <ul class="track-steps">
+          <li onclick="window.open('https://www.youtube.com/watch?v=yX8jBCyBgBo','_blank')"><span class="step-icon">⚗️</span><span class="step-text">Types of Chemical Reactions — CrashCourse ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.youtube.com/watch?v=RnGe3d4vLYk','_blank')"><span class="step-icon">⚖️</span><span class="step-text">Balancing Equations — Tyler DeWitt ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/chemistry/chemical-reactions-stoichiome','_blank')"><span class="step-icon">🔢</span><span class="step-text">Stoichiometry Basics — Khan Academy ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.chemguide.co.uk/atoms/index.html','_blank')"><span class="step-icon">📖</span><span class="step-text">Moles & Avogadro's Number — ChemGuide ↗</span><span class="step-tag read">READ</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/chemistry/chemical-reactions-stoichiome/stoichiometry-ideal/e/stoichiometry','_blank')"><span class="step-icon">✏️</span><span class="step-text">Stoichiometry Problem Set — Khan Academy ↗</span><span class="step-tag practice">PRACTICE</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="video-grid">
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="0RRVV4Diomg">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/0RRVV4Diomg/mqdefault.jpg" alt="Periodic Table"/>
+        <iframe data-src="https://www.youtube.com/embed/0RRVV4Diomg?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag chem-tag">Periodic Table</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=0RRVV4Diomg" target="_blank" rel="noopener">The Periodic Table: Crash Course #4 ↗</a></div>
+        <p class="v-desc">Why is the periodic table arranged the way it is? This video cracks the code — groups, periods, metals, non-metals and why every element has its own personality.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="v-channel">📺 CrashCourse Chemistry ↗</a><span class="v-duration">⏱ 9 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="vCDlvfKjQBk">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/vCDlvfKjQBk/mqdefault.jpg" alt="Chemical Bonding"/>
+        <iframe data-src="https://www.youtube.com/embed/vCDlvfKjQBk?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag chem-tag">Bonding</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=vCDlvfKjQBk" target="_blank" rel="noopener">Chemical Bonds — Ionic, Covalent &amp; Metallic ↗</a></div>
+        <p class="v-desc">Tyler DeWitt explains how atoms link together to form molecules and compounds — with brilliant visual analogies. Makes hard things simple.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@tylerdewitt" target="_blank" rel="noopener" class="v-channel">📺 Tyler DeWitt ↗</a><span class="v-duration">⏱ 13 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="KYXpC9pAENI">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/KYXpC9pAENI/mqdefault.jpg" alt="Chemistry Fundamentals"/>
+        <iframe data-src="https://www.youtube.com/embed/KYXpC9pAENI?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag intermediate">Intermediate</span><span class="v-tag chem-tag">Core Concepts</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=KYXpC9pAENI" target="_blank" rel="noopener">Chemistry Fundamentals — The Big Overview ↗</a></div>
+        <p class="v-desc">An essential full review of core chemistry concepts — atoms, molecules, compounds, mixtures, the mole and more. Great for revision before a test or exam.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@TheOrganicChemistryTutor" target="_blank" rel="noopener" class="v-channel">📺 Organic Chemistry Tutor ↗</a><span class="v-duration">⏱ ~60 min overview</span></div>
+      </div>
+    </div>
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="GVrCTKMD0KY">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/GVrCTKMD0KY/mqdefault.jpg" alt="Acids and Bases"/>
+        <iframe data-src="https://www.youtube.com/embed/GVrCTKMD0KY?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag intermediate">Intermediate</span><span class="v-tag chem-tag">Acids &amp; Bases</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=GVrCTKMD0KY" target="_blank" rel="noopener">Acids, Bases &amp; the pH Scale — Fully Explained ↗</a></div>
+        <p class="v-desc">Everything you need — pH scale, strong vs weak acids, neutralisation reactions, and real-world examples like stomach acid and baking soda.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@khanacademy" target="_blank" rel="noopener" class="v-channel">📺 Khan Academy ↗</a><span class="v-duration">⏱ 10 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="jFv7fBzMeM0">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/jFv7fBzMeM0/mqdefault.jpg" alt="Electrochemistry"/>
+        <iframe data-src="https://www.youtube.com/embed/jFv7fBzMeM0?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag advanced">Advanced</span><span class="v-tag chem-tag">Electrochemistry</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=jFv7fBzMeM0" target="_blank" rel="noopener">Electrochemistry — Redox &amp; Batteries ↗</a></div>
+        <p class="v-desc">How do batteries work? What is oxidation and reduction? This video ties electrochemistry to real-world technology and explains the electron transfer that powers your phone.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="v-channel">📺 CrashCourse Chemistry ↗</a><span class="v-duration">⏱ 13 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="xazQRcSCRaY">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/xazQRcSCRaY/mqdefault.jpg" alt="Atomic Theory"/>
+        <iframe data-src="https://www.youtube.com/embed/xazQRcSCRaY?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag chem-tag">Atomic Theory</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=xazQRcSCRaY" target="_blank" rel="noopener">Atomic Theory — A Brief History ↗</a></div>
+        <p class="v-desc">How did scientists figure out what atoms look like if nobody could see them? The detective story of atomic theory — from Democritus to the electron cloud.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@tylerdewitt" target="_blank" rel="noopener" class="v-channel">📺 Tyler DeWitt ↗</a><span class="v-duration">⏱ 11 min</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ PHYSICS ═══════════════ -->
+<div class="sec-phys" data-section="phys" id="phys">
+  <div class="sec-head reveal">
+    <div class="sec-label p">⚡ Physics</div>
+    <h2>Physics — Forces, Energy & the Universe</h2>
+    <p>Physics isn't about memorising equations — it's about understanding <em>why</em> the universe behaves the way it does. These videos make that journey irresistible.</p>
+  </div>
+
+  <div style="margin-bottom:40px;">
+    <div class="track open reveal">
+      <div class="track-head" onclick="toggleTrack(this)">
+        <div class="track-num p">1</div>
+        <div class="track-title">Unit 1 — Motion & Forces (Mechanics)</div>
+        <span class="track-badge p">5 lessons</span>
+        <span class="track-chevron">▼</span>
+      </div>
+      <div class="track-body">
+        <ul class="track-steps">
+          <li onclick="window.open('https://www.youtube.com/watch?v=ZM8ECpBuQYE','_blank')"><span class="step-icon">📐</span><span class="step-text">Displacement, Velocity & Acceleration — CrashCourse ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.youtube.com/watch?v=kKKM8Y-u7ds','_blank')"><span class="step-icon">🍎</span><span class="step-text">Newton's Three Laws of Motion — Physics Classroom ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/physics/forces-newtons-laws/newtons-laws-of-motion/v/newton-s-first-law-of-motion','_blank')"><span class="step-icon">📊</span><span class="step-text">Drawing Free Body Diagrams — Khan Academy ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.physicsclassroom.com/class/newtlaws','_blank')"><span class="step-icon">📖</span><span class="step-text">Friction, Normal Force & Tension — Physics Classroom ↗</span><span class="step-tag read">READ</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/physics/forces-newtons-laws','_blank')"><span class="step-icon">✏️</span><span class="step-text">Forces & Motion Problem Set — Khan Academy ↗</span><span class="step-tag practice">PRACTICE</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="track reveal">
+      <div class="track-head" onclick="toggleTrack(this)">
+        <div class="track-num p">2</div>
+        <div class="track-title">Unit 2 — Energy, Work & Power</div>
+        <span class="track-badge p">4 lessons</span>
+        <span class="track-chevron">▼</span>
+      </div>
+      <div class="track-body">
+        <ul class="track-steps">
+          <li onclick="window.open('https://www.youtube.com/watch?v=nHIGMtcBEjU','_blank')"><span class="step-icon">⚡</span><span class="step-text">What is Energy? — Veritasium ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.youtube.com/watch?v=ZM8ECpBuQYE','_blank')"><span class="step-icon">🔋</span><span class="step-text">Kinetic & Potential Energy — CrashCourse ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/physics/work-and-energy','_blank')"><span class="step-icon">🏋️</span><span class="step-text">Work & Power Calculations — Khan Academy ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/physics/work-and-energy/work-and-energy-tutorial/e/calculating-the-work-done-by-forces','_blank')"><span class="step-icon">✏️</span><span class="step-text">Energy Conservation Practice — Khan Academy ↗</span><span class="step-tag practice">PRACTICE</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="track reveal">
+      <div class="track-head" onclick="toggleTrack(this)">
+        <div class="track-num p">3</div>
+        <div class="track-title">Unit 3 — Electricity & Magnetism</div>
+        <span class="track-badge p">4 lessons</span>
+        <span class="track-chevron">▼</span>
+      </div>
+      <div class="track-body">
+        <ul class="track-steps">
+          <li onclick="window.open('https://www.youtube.com/watch?v=mc979OhitAg','_blank')"><span class="step-icon">💡</span><span class="step-text">Electric Current & Circuits — CrashCourse ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/physics/circuits-topic','_blank')"><span class="step-icon">🔌</span><span class="step-text">Ohm's Law Explained — Khan Academy ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.youtube.com/watch?v=hFAOXdXZ5TM','_blank')"><span class="step-icon">🧲</span><span class="step-text">Magnets & Magnetic Fields — Veritasium ↗</span><span class="step-tag vid">VIDEO</span></li>
+          <li onclick="window.open('https://www.khanacademy.org/science/physics/circuits-topic/circuits-resistance/e/circuit-analysis','_blank')"><span class="step-icon">✏️</span><span class="step-text">Circuit Analysis Problems — Khan Academy ↗</span><span class="step-tag practice">PRACTICE</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="video-grid">
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="kKKM8Y-u7ds">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/kKKM8Y-u7ds/mqdefault.jpg" alt="Newton's Laws"/>
+        <iframe data-src="https://www.youtube.com/embed/kKKM8Y-u7ds?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag phys-tag">Forces</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=kKKM8Y-u7ds" target="_blank" rel="noopener">Newton's Three Laws of Motion — Visualised ↗</a></div>
+        <p class="v-desc">Inertia, F=ma, and action-reaction — Newton's laws govern everything from a falling apple to a rocket launch. All three click with vivid real-world demos.</p>
+        <div class="v-meta"><a href="https://www.physicsclassroom.com" target="_blank" rel="noopener" class="v-channel">📺 The Physics Classroom ↗</a><span class="v-duration">⏱ 8 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="nHIGMtcBEjU">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/nHIGMtcBEjU/mqdefault.jpg" alt="What is Energy"/>
+        <iframe data-src="https://www.youtube.com/embed/nHIGMtcBEjU?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag intermediate">Intermediate</span><span class="v-tag phys-tag">Energy</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=nHIGMtcBEjU" target="_blank" rel="noopener">What Is Energy? (The Real Answer Is Strange) ↗</a></div>
+        <p class="v-desc">Veritasium explores one of the most fundamental — and surprisingly slippery — concepts in all of science. Kinetic, potential, thermal, chemical: what does "energy" actually mean?</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener" class="v-channel">📺 Veritasium ↗</a><span class="v-duration">⏱ 11 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="mc979OhitAg">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/mc979OhitAg/mqdefault.jpg" alt="Electricity Basics"/>
+        <iframe data-src="https://www.youtube.com/embed/mc979OhitAg?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag phys-tag">Electricity</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=mc979OhitAg" target="_blank" rel="noopener">Electricity Explained — Current, Voltage &amp; Resistance ↗</a></div>
+        <p class="v-desc">Demystifies electricity from the ground up. Understand circuits, what voltage actually means, and why Ohm's Law is one of the most useful equations in physics.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="v-channel">📺 CrashCourse Physics ↗</a><span class="v-duration">⏱ 10 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="TlphDFADSz8">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/TlphDFADSz8/mqdefault.jpg" alt="Waves Physics"/>
+        <iframe data-src="https://www.youtube.com/embed/TlphDFADSz8?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag intermediate">Intermediate</span><span class="v-tag phys-tag">Waves</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=TlphDFADSz8" target="_blank" rel="noopener">Waves — Sound, Light &amp; the EM Spectrum ↗</a></div>
+        <p class="v-desc">From the sound of a guitar to the light from a star — wave physics underlies almost everything. Transverse vs longitudinal, frequency, amplitude, and wavelength explained.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="v-channel">📺 CrashCourse Physics ↗</a><span class="v-duration">⏱ 9 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="e-NggqBGwjQ">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/e-NggqBGwjQ/mqdefault.jpg" alt="Falling Objects"/>
+        <iframe data-src="https://www.youtube.com/embed/e-NggqBGwjQ?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag intermediate">Intermediate</span><span class="v-tag phys-tag">Gravity</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=e-NggqBGwjQ" target="_blank" rel="noopener">Misconceptions About Falling Objects ↗</a></div>
+        <p class="v-desc">Does a heavier object fall faster? Galileo dropped two balls from the Tower of Pisa — and the answer surprises most people. A mind-bending look at gravity and air resistance.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener" class="v-channel">📺 Veritasium ↗</a><span class="v-duration">⏱ 5 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="WIyTZDHuarQ">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/WIyTZDHuarQ/mqdefault.jpg" alt="Quantum Physics"/>
+        <iframe data-src="https://www.youtube.com/embed/WIyTZDHuarQ?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag advanced">Advanced</span><span class="v-tag phys-tag">Quantum</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=WIyTZDHuarQ" target="_blank" rel="noopener">Quantum Physics for Beginners — Mind Blown ↗</a></div>
+        <p class="v-desc">An accessible intro to the weirdest branch of physics. Double-slit experiments, superposition, wave-particle duality — real phenomena that will flip your understanding of reality.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@kurzgesagt" target="_blank" rel="noopener" class="v-channel">📺 Kurzgesagt ↗</a><span class="v-duration">⏱ 14 min</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ RESOURCES ═══════════════ -->
+<div class="sec-res" data-section="res" id="resources">
+  <div class="sec-head reveal">
+    <div class="sec-label r">🔗 Free Resources & Tools</div>
+    <h2>The Best Free Science Websites</h2>
+    <p>Gold-standard platforms used by students and teachers worldwide. All free, all brilliant.</p>
+  </div>
+
+  <div class="res-grid">
+    <a href="https://www.khanacademy.org/science" target="_blank" rel="noopener" class="r-card a reveal">
+      <div class="r-icon">🏫</div>
+      <div class="r-name">Khan Academy</div>
+      <p class="r-desc">World-class video lessons, practice exercises and progress tracking for chemistry and physics — completely free. One of the best learning platforms ever built.</p>
+      <div class="r-link">Visit Khan Academy →</div>
+    </a>
+    <a href="https://phet.colorado.edu/en/simulations/filter?subjects=chemistry,physics" target="_blank" rel="noopener" class="r-card b reveal">
+      <div class="r-icon">🧪</div>
+      <div class="r-name">PhET Interactive Simulations</div>
+      <p class="r-desc">Run virtual science experiments right in your browser! Built by the University of Colorado — simulate atom building, circuit design, wave interference and more.</p>
+      <div class="r-link">Launch PhET →</div>
+    </a>
+    <a href="https://www.bbc.co.uk/bitesize/subjects/zrkw2hv" target="_blank" rel="noopener" class="r-card c reveal">
+      <div class="r-icon">📚</div>
+      <div class="r-name">BBC Bitesize — Science</div>
+      <p class="r-desc">Concise, exam-focused revision notes for chemistry and physics. Perfect for quick reviews before a test. Includes quizzes, videos, and worked examples.</p>
+      <div class="r-link">Start Revising →</div>
+    </a>
+    <a href="https://www.chemguide.co.uk/" target="_blank" rel="noopener" class="r-card d reveal">
+      <div class="r-icon">🔬</div>
+      <div class="r-name">ChemGuide</div>
+      <p class="r-desc">Deep, clear written explanations of virtually every chemistry topic. Excellent for when you need more depth than a short video and want to really understand the theory.</p>
+      <div class="r-link">Explore ChemGuide →</div>
+    </a>
+    <a href="https://www.youtube.com/@crashcourse" target="_blank" rel="noopener" class="r-card e reveal">
+      <div class="r-icon">🎬</div>
+      <div class="r-name">CrashCourse (YouTube)</div>
+      <p class="r-desc">One of the most watched educational YouTube channels ever. Their chemistry and physics playlists are packed with high-quality animated lessons that make complex ideas feel easy.</p>
+      <div class="r-link">Watch CrashCourse →</div>
+    </a>
+    <a href="https://www.wolframalpha.com/" target="_blank" rel="noopener" class="r-card f reveal">
+      <div class="r-icon">🤖</div>
+      <div class="r-name">Wolfram Alpha</div>
+      <p class="r-desc">An incredible computation engine — type in any chemistry or physics question and get step-by-step solutions. Great for checking your working and understanding how problems are solved.</p>
+      <div class="r-link">Use Wolfram Alpha →</div>
+    </a>
+  </div>
+
+  <div class="sec-head reveal" style="padding-top:50px;">
+    <div class="sec-label r">📺 YouTube Channels We Love</div>
+    <h2>More Brilliant Educators to Follow</h2>
+    <p>Subscribe to these channels and your YouTube homepage becomes your best science teacher.</p>
+  </div>
+
+  <div class="video-grid">
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="Hh0cKjLjoK0">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/Hh0cKjLjoK0/mqdefault.jpg" alt="Kurzgesagt"/>
+        <iframe data-src="https://www.youtube.com/embed/Hh0cKjLjoK0?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag intermediate">Intermediate</span><span class="v-tag phys-tag">Big Ideas</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=Hh0cKjLjoK0" target="_blank" rel="noopener">Kurzgesagt — The Most Astounding Fact About the Universe ↗</a></div>
+        <p class="v-desc">Beautiful animation meets deep science. Kurzgesagt explores the biggest questions — from particle physics to black holes — in a way that gives you genuine goosebumps.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@kurzgesagt" target="_blank" rel="noopener" class="v-channel">📺 Kurzgesagt – In a Nutshell ↗</a><span class="v-duration">⏱ 4 min</span></div>
+      </div>
+    </div>
+
+    <div class="v-card phys reveal">
+      <div class="v-thumb" data-vid="9CS88EQOL9E">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/9CS88EQOL9E/mqdefault.jpg" alt="Veritasium"/>
+        <iframe data-src="https://www.youtube.com/embed/9CS88EQOL9E?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag advanced">Advanced</span><span class="v-tag phys-tag">Mind-Bending</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=9CS88EQOL9E" target="_blank" rel="noopener">Veritasium — Science You Need to Know ↗</a></div>
+        <p class="v-desc">Derek Muller's channel is legendary for turning physics into storytelling. Every video challenges a misconception and leaves you seeing the world differently. Highly addictive.</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener" class="v-channel">📺 Veritasium ↗</a><span class="v-duration">⏱ Variable</span></div>
+      </div>
+    </div>
+
+    <div class="v-card chem reveal">
+      <div class="v-thumb" data-vid="d5_hqMibMis">
+        <img class="v-thumb-img" src="https://img.youtube.com/vi/d5_hqMibMis/mqdefault.jpg" alt="Periodic Videos"/>
+        <iframe data-src="https://www.youtube.com/embed/d5_hqMibMis?rel=0&modestbranding=1" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="v-overlay"><div class="play-btn">▶</div></div>
+      </div>
+      <div class="v-body">
+        <div class="v-tags"><span class="v-tag beginner">Beginner</span><span class="v-tag chem-tag">Elements</span></div>
+        <div class="v-title"><a href="https://www.youtube.com/watch?v=d5_hqMibMis" target="_blank" rel="noopener">Periodic Videos — Every Element Explored ↗</a></div>
+        <p class="v-desc">Professor Martyn Poliakoff and team have made a video about every single element — complete with real experiments. Chemistry at its most joyful and explosive!</p>
+        <div class="v-meta"><a href="https://www.youtube.com/@periodicvideos" target="_blank" rel="noopener" class="v-channel">📺 Periodic Videos ↗</a><span class="v-duration">⏱ Variable</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<div class="cta-banner reveal">
+  <h2>🌟 Ready to Go Even Deeper?</h2>
+  <p>Follow a structured path, practise past papers, and join a community of students who believe science is for everyone. Your next breakthrough is just one video away.</p>
+  <div class="btn-row">
+    <a href="#chem" class="btn btn-green">⚗️ Start Chemistry Path</a>
+    <a href="#phys" class="btn btn-gold">⚡ Start Physics Path</a>
+    <a href="about.html" class="btn btn-ghost">← Back to About</a>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p>© 2026 <strong style="color:var(--chem);opacity:1;">Tats Learning Hub</strong> · Making Chemistry &amp; Physics click for every student · Videos linked from YouTube under fair educational use</p>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════
+   VIDEO PLAY — click overlay to load + play
+══════════════════════════════════════════ */
+document.querySelectorAll('.v-thumb').forEach(thumb => {
+  const overlay = thumb.querySelector('.v-overlay');
+  const iframe  = thumb.querySelector('iframe');
+
+  overlay.addEventListener('click', () => {
+    // Load the actual src with autoplay only on click (avoids browser block)
+    const baseSrc = iframe.getAttribute('data-src');
+    iframe.setAttribute('src', baseSrc + '&autoplay=1');
+    thumb.classList.add('playing');
+  });
+});
+
+/* ══════════════════════════════════════════
+   TAB FILTER
+══════════════════════════════════════════ */
+const tabs = document.querySelectorAll('.tab');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const f = tab.dataset.filter;
+
+    // Update active tab styling
+    tabs.forEach(t => {
+      t.className = 'tab';
+    });
+    const classMap = { all:'active-all', chem:'active-chem', phys:'active-phys', res:'active-res', start:'active-start' };
+    tab.classList.add('tab', classMap[f] || 'active-all');
+
+    // Show/hide sections
+    document.querySelectorAll('[data-section]').forEach(sec => {
+      if (f === 'all') {
+        sec.classList.remove('sec-hidden');
+      } else {
+        const match = sec.dataset.section === f;
+        sec.classList.toggle('sec-hidden', !match);
+      }
+    });
+
+    // Smooth scroll to content
+    window.scrollTo({ top: document.querySelector('.tab-bar').offsetTop + 70, behavior: 'smooth' });
+  });
+});
+
+/* ══════════════════════════════════════════
+   TRACK ACCORDION
+══════════════════════════════════════════ */
+function toggleTrack(head) {
+  const track = head.closest('.track');
+  const wasOpen = track.classList.contains('open');
+  document.querySelectorAll('.track').forEach(t => t.classList.remove('open'));
+  if (!wasOpen) track.classList.add('open');
+}
+
+/* ══════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════ */
+const ro = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('vis'), i * 70);
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+</script>
+</body>
+</html>

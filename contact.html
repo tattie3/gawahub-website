@@ -1,0 +1,923 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professor Tats Hub | IGCSE Physics 0625</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050a14;
+  --surface: #0d1626;
+  --surface2: #111d35;
+  --neon: #00f5d4;
+  --neon2: #7b61ff;
+  --accent: #ff5470;
+  --gold: #ffd166;
+  --text: #e2eaf8;
+  --muted: #7a8fae;
+  --glow: 0 0 30px rgba(0,245,212,0.25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ─── CANVAS BG ─── */
+#cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; width: 100%;
+  z-index: 1000;
+  padding: 18px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(5,10,20,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,245,212,0.1);
+}
+
+.nav-logo {
+  font-family: 'Oxanium', monospace;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--neon);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 35px;
+}
+
+nav a {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 0.3s;
+  position: relative;
+}
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -6px; left: 0;
+  width: 0; height: 2px;
+  background: var(--neon);
+  transition: width 0.3s;
+}
+nav a:hover { color: var(--neon); }
+nav a:hover::after { width: 100%; }
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  overflow: hidden;
+}
+
+.hero-eyebrow {
+  font-family: 'Oxanium', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 24px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero h1 {
+  font-family: 'Oxanium', monospace;
+  font-weight: 800;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: -2px;
+  animation: fadeUp 0.9s 0.1s ease both;
+}
+
+.hero h1 span {
+  display: block;
+  background: linear-gradient(90deg, var(--neon), var(--neon2), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  max-width: 540px;
+  margin: 28px auto 0;
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.7;
+  animation: fadeUp 1s 0.2s ease both;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  margin-top: 44px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeUp 1s 0.3s ease both;
+}
+
+.btn-primary {
+  padding: 14px 34px;
+  background: var(--neon);
+  color: var(--bg);
+  font-family: 'Oxanium', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 20px rgba(0,245,212,0.4);
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 35px rgba(0,245,212,0.6); }
+
+.btn-outline {
+  padding: 14px 34px;
+  background: transparent;
+  color: var(--text);
+  font-family: 'Oxanium', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: var(--neon); color: var(--neon); }
+
+/* ─── SECTION BASE ─── */
+section {
+  position: relative;
+  z-index: 1;
+  padding: 110px 24px;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Oxanium', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.section-title {
+  font-family: 'Oxanium', monospace;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ─── STATS BAR ─── */
+.stats-bar {
+  position: relative; z-index: 1;
+  background: var(--surface);
+  border-top: 1px solid rgba(0,245,212,0.1);
+  border-bottom: 1px solid rgba(0,245,212,0.1);
+  padding: 40px 24px;
+}
+
+.stats-grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Oxanium', monospace;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--neon);
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ─── TOPICS GRID ─── */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.topic-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 34px 30px;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.topic-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 0% 0%, rgba(0,245,212,0.07), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.topic-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0,245,212,0.3);
+  box-shadow: var(--glow);
+}
+.topic-card:hover::before { opacity: 1; }
+
+.topic-icon {
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 22px;
+  background: rgba(0,245,212,0.1);
+}
+
+.topic-card h3 {
+  font-family: 'Oxanium', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.topic-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.topic-tag-new {
+  display: inline-block;
+  background: rgba(255,84,112,0.15);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+}
+
+/* ─── ABOUT ─── */
+.about-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.about-visual {
+  position: relative;
+  height: 380px;
+}
+
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px dashed rgba(0,245,212,0.25);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.orbit-ring:nth-child(1) { width: 260px; height: 260px; animation: spin 12s linear infinite; }
+.orbit-ring:nth-child(2) { width: 180px; height: 180px; animation: spin 8s linear infinite reverse; }
+.orbit-ring:nth-child(3) { width: 100px; height: 100px; animation: spin 5s linear infinite; }
+
+@keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+.nucleus {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 60px; height: 60px;
+  background: radial-gradient(circle, var(--neon), var(--neon2));
+  border-radius: 50%;
+  box-shadow: 0 0 40px rgba(0,245,212,0.6);
+}
+
+.electron {
+  position: absolute;
+  width: 10px; height: 10px;
+  background: var(--neon);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon);
+}
+.electron:nth-child(1) { top: -5px; left: 50%; margin-left: -5px; }
+.electron:nth-child(2) { bottom: -5px; left: 50%; margin-left: -5px; }
+
+.about-text .section-sub { max-width: 100%; }
+
+.feature-list {
+  list-style: none;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.feat-icon {
+  width: 28px; height: 28px;
+  background: rgba(0,245,212,0.1);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--neon);
+  font-size: 0.85rem;
+}
+
+/* ─── CONTACT ─── */
+.contact-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.contact-info h3 {
+  font-family: 'Oxanium', monospace;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.contact-info p { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+
+.contact-details {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.contact-item span:first-child {
+  font-size: 1.2rem;
+}
+
+.form-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 40px 36px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  outline: none;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: rgba(122,143,174,0.5); }
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 3px rgba(0,245,212,0.1);
+}
+
+.form-group textarea {
+  height: 130px;
+  resize: vertical;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(90deg, var(--neon), var(--neon2));
+  color: var(--bg);
+  font-family: 'Oxanium', monospace;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-submit:hover { opacity: 0.88; transform: translateY(-2px); }
+
+/* ─── PAYMENT ─── */
+#payment { background: var(--surface); }
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.pay-card {
+  background: var(--bg);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 36px 28px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  display: block;
+}
+.pay-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(0,245,212,0.35);
+  box-shadow: var(--glow);
+}
+
+.pay-icon {
+  width: 68px; height: 68px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+}
+
+.pay-card h3 {
+  font-family: 'Oxanium', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.pay-card p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.pay-note {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.pay-note strong { color: var(--neon); }
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 50px 24px 30px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Oxanium', monospace;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--neon);
+  margin-bottom: 12px;
+}
+
+footer p {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 24px 0;
+  list-style: none;
+}
+
+.footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--neon); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ─── DIVIDER ─── */
+.glow-line {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon), transparent);
+  border-radius: 2px;
+  margin: 20px 0 36px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  nav { padding: 14px 20px; }
+  nav ul { gap: 20px; }
+  .about-inner { grid-template-columns: 1fr; }
+  .about-visual { display: none; }
+  .contact-wrap { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- CANVAS STARFIELD -->
+<canvas id="cosmos"></canvas>
+
+<nav>
+  <div class="nav-logo">Prof Tats</div>
+  <ul>
+    <li><a href="#home">Topics</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#payment">Get Access</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <p class="hero-eyebrow">✦ Cambridge IGCSE Physics 0625 · 2026–2028 Syllabus</p>
+  <h1>
+    Understand<br>
+    <span>Physics,</span>
+    Actually.
+  </h1>
+  <p class="hero-sub">No more memorising without meaning. Professor Tats Hub breaks down every chapter — visually, practically, and in ways that stick.</p>
+  <div class="hero-cta">
+    <a href="#home" class="btn-primary">Explore Topics</a>
+    <a href="#contact" class="btn-outline">Get in Touch</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-grid">
+    <div>
+      <span class="stat-num">6</span>
+      <div class="stat-label">Core Units</div>
+    </div>
+    <div>
+      <span class="stat-num">3</span>
+      <div class="stat-label">Exam Papers</div>
+    </div>
+    <div>
+      <span class="stat-num">2026</span>
+      <div class="stat-label">Syllabus Version</div>
+    </div>
+    <div>
+      <span class="stat-num">A*</span>
+      <div class="stat-label">Your Target Grade</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPICS -->
+<section id="home">
+  <div class="container">
+    <span class="section-label reveal">Syllabus Breakdown</span>
+    <h2 class="section-title reveal">Every Topic, Covered.</h2>
+    <div class="glow-line reveal"></div>
+    <p class="section-sub reveal">The full 2026–2028 Cambridge IGCSE Physics syllabus — tackled chapter by chapter with clear explanations and worked examples.</p>
+
+    <div class="topics-grid">
+      <div class="topic-card reveal">
+        <div class="topic-icon">⚡</div>
+        <div class="topic-tag-new">Chapter 1</div>
+        <h3>Motion, Forces & Energy</h3>
+        <p>Speed, velocity, acceleration, Newton's laws, momentum, work, power, and energy transformations — the backbone of all physics.</p>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-icon">🌡️</div>
+        <div class="topic-tag-new">Chapter 2</div>
+        <h3>Thermal Physics</h3>
+        <p>Kinetic model of matter, thermal expansion, specific heat capacity, latent heat, and the gas laws in action.</p>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-icon">🌊</div>
+        <div class="topic-tag-new">Chapter 3</div>
+        <h3>Waves</h3>
+        <p>Transverse and longitudinal waves, light, sound, reflection, refraction, diffraction, and the electromagnetic spectrum.</p>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-icon">🔌</div>
+        <div class="topic-tag-new">Chapter 4</div>
+        <h3>Electricity & Magnetism</h3>
+        <p>Circuit theory, Ohm's law, series/parallel circuits, electromagnetism, motors, generators, and transformers.</p>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-icon">☢️</div>
+        <div class="topic-tag-new">Chapter 5</div>
+        <h3>Nuclear Physics</h3>
+        <p>Atomic structure, radioactive decay, half-life, fission, fusion, and radiation safety — demystified.</p>
+      </div>
+      <div class="topic-card reveal">
+        <div class="topic-icon">🪐</div>
+        <div class="topic-tag-new">Chapter 6</div>
+        <h3>Space Physics</h3>
+        <p>The Solar System, stars, galaxies, the Big Bang, and the expanding universe — physics at its biggest scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="background: var(--surface);">
+  <div class="container">
+    <div class="about-inner">
+      <div class="about-visual">
+        <div class="orbit-ring"><div class="electron"></div><div class="electron"></div></div>
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring"></div>
+        <div class="nucleus"></div>
+      </div>
+      <div class="about-text">
+        <span class="section-label reveal">About This Course</span>
+        <h2 class="section-title reveal">Built for Students<br>Who Want Results</h2>
+        <div class="glow-line reveal"></div>
+        <p class="section-sub reveal">Professor Tats Hub is a Zimbabwe-based IGCSE Physics study resource, crafted to help students grasp concepts deeply — not just pass, but understand.</p>
+        <ul class="feature-list reveal">
+          <li>
+            <div class="feat-icon">✓</div>
+            <span>Full 2026–2028 syllabus coverage for Cambridge IGCSE Physics 0625</span>
+          </li>
+          <li>
+            <div class="feat-icon">✓</div>
+            <span>Step-by-step worked examples with exam-style questions</span>
+          </li>
+          <li>
+            <div class="feat-icon">✓</div>
+            <span>Direct WhatsApp support for personalised help</span>
+          </li>
+          <li>
+            <div class="feat-icon">✓</div>
+            <span>Local payment methods — EcoCash, Mukuru, InnBucks accepted</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-wrap">
+      <div class="contact-info">
+        <span class="section-label reveal">Contact</span>
+        <h2 class="section-title reveal" style="font-size:2rem;">Let's Talk Physics</h2>
+        <div class="glow-line reveal"></div>
+        <p class="reveal">Have a question about a topic, pricing, or just want to say hello? Drop a message and I'll get back to you.</p>
+        <div class="contact-details reveal">
+          <div class="contact-item"><span>📍Kwekwe, Zimbabwe</span></div>
+          <div class="contact-item"><span>💬</span><span>+263 782 340 190 (WhatsApp)</span></div>
+          <div class="contact-item"><span>✉️</span><span>gawatatenda313@gmail.com</span></div>
+        </div>
+      </div>
+
+      <div class="form-card reveal">
+        <form action="https://formsubmit.co/gawatatenda@gmail.com" method="POST">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_subject" value="New Message from Physics Portal">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea name="message" placeholder="Ask a question, give feedback, or enquire about access..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send Message →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT -->
+<section id="payment">
+  <div class="container">
+    <span class="section-label reveal" style="text-align:center; display:block;">Premium Access</span>
+    <h2 class="section-title reveal" style="text-align:center;">Unlock Full Content</h2>
+    <div class="glow-line reveal" style="margin:20px auto 36px;"></div>
+    <p class="section-sub reveal" style="text-align:center; margin:0 auto;">Choose your preferred payment method below. After payment, contact via WhatsApp to activate your account instantly.</p>
+	  <p class="section-sub reveal" style="text-align:center; margin:0 auto;">
+	  HELP US GROW ! ,you can donate any amount</p>
+	  <p class="section-sub reveal" style="text-align:center; margin:0 auto;">&nbsp;</p>
+
+    <div class="payment-grid">
+      <a class="pay-card reveal" href="https://wa.me/263782340190" target="_blank">
+        <div class="pay-icon" style="background:rgba(37,211,102,0.1); color:#25d366;">💬</div>
+        <h3>WhatsApp</h3>
+        <p>Chat directly and arrange payment — fast, personal, and easy.</p>
+      </a>
+      <a class="pay-card reveal" href="#" onclick="alert('Open your Mukuru app and send payment to +263 782 340 190'); return false;">
+        <div class="pay-icon" style="background:rgba(255,84,112,0.1); color:var(--accent);">💸</div>
+        <h3>Mukuru</h3>
+        <p>Send via Mukuru using the contact number. Receipt confirms access.</p>
+      </a>
+      <a class="pay-card reveal" href="#" onclick="alert('Open your InnBucks app and send payment to +263 782 340 190'); return false;">
+        <div class="pay-icon" style="background:rgba(123,97,255,0.1); color:var(--neon2);">📱</div>
+        <h3>InnBucks</h3>
+        <p>Instant local transfer. Send to the number and drop a WhatsApp proof.</p>
+      </a>
+    </div>
+
+    <p class="pay-note">✦ After payment, send proof of transaction via <strong>WhatsApp +263 782 340 190</strong> to activate access within minutes.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Professor Tats Hub</div>
+  <ul class="footer-links">
+    <li><a href="the%20gawa%20%20school%20hub.html">Home</a></li>
+    <li>A<a href="about.html">bout</a></li>
+    <li><a href="contact.html">contact</a></li>
+    <li><a href="more%20of%20about.html">More Of About</a></li>
+  </ul>
+  <p>© 2026 Professor Tats Hub · Cambridge IGCSE Physics 0625 · Kwekwe, Zimbabwe</p>
+  <p style="margin-top:8px; font-size:0.75rem;">Built with ❤️ to make physics click.</p>
+</footer>
+
+<script>
+// ─── STARFIELD CANVAS ───
+const canvas = document.getElementById('cosmos');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 180; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.3,
+      o: Math.random() * 0.7 + 0.1,
+      speed: Math.random() * 0.25 + 0.05,
+      twinkle: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function drawStars(t) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    s.twinkle += 0.015;
+    const opacity = s.o * (0.6 + 0.4 * Math.sin(s.twinkle));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,220,255,${opacity})`;
+    ctx.fill();
+    s.y += s.speed;
+    if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+  });
+  requestAnimationFrame(drawStars);
+}
+
+resize();
+initStars();
+drawStars();
+window.addEventListener('resize', () => { resize(); initStars(); });
+
+// ─── SCROLL REVEAL ───
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>s

@@ -1,0 +1,883 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professor Tats Physics & Chemistry Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #ff6b35;
+    --teal: #00d4aa;
+    --navy: #0a1628;
+    --card-bg: #111e35;
+    --text: #e8f0ff;
+    --muted: #7a8db0;
+    --glow-orange: 0 0 30px rgba(255,107,53,0.5);
+    --glow-teal: 0 0 30px rgba(0,212,170,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ─── INTRO ─────────────────────────────────── */
+  #intro {
+    position: fixed; inset: 0;
+    background: #020b18;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: introFade 1s ease forwards;
+    animation-delay: 5.5s;
+  }
+  @keyframes introFade { to { opacity: 0; pointer-events: none; visibility: hidden; } }
+
+  #intro-canvas {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+
+  .intro-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  .intro-title span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(60px) rotate(-5deg);
+    animation: wordPop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .intro-title span:nth-child(1) { animation-delay: 0.4s; color: var(--orange); }
+  .intro-title span:nth-child(2) { animation-delay: 0.8s; color: white; }
+  .intro-title span:nth-child(3) { animation-delay: 1.2s; color: var(--teal); }
+  .intro-title span:nth-child(4) { animation-delay: 1.6s; color: white; }
+
+  @keyframes wordPop {
+    to { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  .intro-sub {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    animation-delay: 2.2s;
+  }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  .intro-loader {
+    margin-top: 2rem;
+    width: 200px;
+    height: 4px;
+    background: #1a2a45;
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.4s ease forwards;
+    animation-delay: 2.6s;
+  }
+  .intro-loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--teal));
+    border-radius: 10px;
+    width: 0;
+    animation: loadBar 2.5s ease forwards;
+    animation-delay: 2.8s;
+  }
+  @keyframes loadBar { to { width: 100%; } }
+
+  /* ─── MAIN ──────────────────────────────────── */
+  #main {
+    opacity: 0;
+    animation: mainAppear 1s ease forwards;
+    animation-delay: 6.2s;
+  }
+  @keyframes mainAppear { to { opacity: 1; } }
+
+  /* ─── PARTICLES BG ───────────────────────────── */
+  #bg-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── HEADER ────────────────────────────────── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, #020b18 0%, transparent 100%);
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--orange), #ff4500);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 50px;
+    margin-bottom: 1rem;
+  }
+
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    background: linear-gradient(135deg, #fff 0%, var(--teal) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  header p {
+    color: var(--muted);
+    margin-top: 0.6rem;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+
+  /* ─── NAV ───────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 2rem;
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    flex-wrap: wrap;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+  nav a:hover, nav a.active {
+    color: white;
+    background: rgba(255,107,53,0.15);
+    border-color: rgba(255,107,53,0.4);
+  }
+
+  /* ─── STATS STRIP ────────────────────────────── */
+  .stats-strip {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--teal);
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ─── SECTION TITLE ──────────────────────────── */
+  .section-title {
+    text-align: center;
+    padding: 1rem 2rem 0;
+    position: relative;
+    z-index: 10;
+  }
+  .section-title h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: white;
+  }
+  .section-title p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+
+  /* ─── MAIN CARDS ─────────────────────────────── */
+  .cards-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+  }
+
+  .subject-card {
+    width: 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s;
+    position: relative;
+  }
+
+  .subject-card:hover {
+    transform: translateY(-12px) scale(1.03);
+  }
+
+  .subject-card.chem:hover { box-shadow: var(--glow-teal); }
+  .subject-card.phys:hover { box-shadow: var(--glow-orange); }
+
+  .card-top {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .subject-card.chem .card-top {
+    background: linear-gradient(135deg, #003d2e, #007a5a);
+  }
+  .subject-card.phys .card-top {
+    background: linear-gradient(135deg, #3d1500, #b83400);
+  }
+
+  .card-top::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.1), transparent 60%);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 50px;
+    margin-bottom: 0.8rem;
+  }
+  .chem .card-tag { background: rgba(0,212,170,0.15); color: var(--teal); }
+  .phys .card-tag { background: rgba(255,107,53,0.15); color: var(--orange); }
+
+  .card-body h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: white;
+    margin-bottom: 0.4rem;
+  }
+
+  .card-body p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+
+  .topic-list {
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+  .topic-list li {
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .topic-list li::before {
+    content: '→';
+    font-size: 0.75rem;
+  }
+  .chem .topic-list li::before { color: var(--teal); }
+  .phys .topic-list li::before { color: var(--orange); }
+
+  .card-btn {
+    display: block;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .chem .card-btn {
+    background: linear-gradient(135deg, #00a87a, var(--teal));
+    color: #002a1c;
+  }
+  .phys .card-btn {
+    background: linear-gradient(135deg, var(--orange), #ff9a3c);
+    color: #3d1500;
+  }
+  .card-btn:hover { opacity: 0.85; transform: scale(0.98); }
+
+  /* ─── QUICK QUIZ ──────────────────────────────── */
+  .quiz-section {
+    max-width: 700px;
+    margin: 1rem auto 2rem;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .quiz-box {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+  }
+
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .quiz-header h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    color: white;
+  }
+
+  .quiz-badge {
+    background: rgba(255,215,0,0.15);
+    color: gold;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    border-radius: 50px;
+  }
+
+  .quiz-question {
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+    min-height: 50px;
+    line-height: 1.6;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .quiz-opt {
+    padding: 0.7rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .quiz-opt:hover { background: rgba(255,255,255,0.1); border-color: var(--teal); }
+  .quiz-opt.correct { background: rgba(0,212,170,0.2); border-color: var(--teal); color: var(--teal); }
+  .quiz-opt.wrong { background: rgba(255,80,80,0.15); border-color: #ff5050; color: #ff5050; }
+
+  .quiz-feedback {
+    min-height: 24px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--teal);
+  }
+
+  .quiz-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-next {
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, var(--orange), #ff9a3c);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .btn-next:hover { opacity: 0.85; }
+
+  .quiz-score {
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* ─── FORMULA CARDS ──────────────────────────── */
+  .formula-section {
+    max-width: 900px;
+    margin: 0 auto 2rem;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .formula-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,107,53,0.4) transparent;
+  }
+
+  .formula-card {
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 1.2rem 1.5rem;
+    min-width: 200px;
+    transition: all 0.3s;
+  }
+  .formula-card:hover {
+    border-color: rgba(0,212,170,0.5);
+    transform: scale(1.03);
+  }
+
+  .formula-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .formula-eq {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.3rem;
+    color: var(--teal);
+    margin-bottom: 0.4rem;
+  }
+
+  .formula-name {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  /* ─── DARK MODE TOGGLE ────────────────────────── */
+  .toggle-wrap {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 500;
+  }
+
+  #themeBtn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid rgba(255,255,255,0.15);
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    transition: all 0.3s;
+  }
+  #themeBtn:hover { transform: scale(1.1); border-color: var(--teal); }
+
+  /* ─── FOOTER ────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 10;
+  }
+  footer span { color: var(--orange); }
+
+  /* ─── LIGHT MODE ─────────────────────────────── */
+  body.light {
+    --navy: #f0f4ff;
+    --card-bg: #ffffff;
+    --text: #1a2540;
+    --muted: #6b7a9a;
+    background: var(--navy);
+  }
+  body.light nav {
+    background: rgba(240,244,255,0.9);
+    border-bottom-color: rgba(0,0,0,0.08);
+  }
+
+  /* ─── RESPONSIVE ────────────────────────────── */
+  @media (max-width: 600px) {
+    .quiz-options { grid-template-columns: 1fr; }
+    .stats-strip { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── INTRO ──────────────────── -->
+<div id="intro">
+  <canvas id="intro-canvas"></canvas>
+  <div class="intro-title">
+    <span>Welcome&nbsp;</span>
+    <span>to&nbsp;</span>
+    <span>Tats&nbsp;</span>
+    <span>Hub</span>
+  </div>
+  <p class="intro-sub">Physics &amp; Chemistry Revision</p>
+  <div class="intro-loader"><div class="intro-loader-bar"></div></div>
+</div>
+
+<!-- ─── BACKGROUND PARTICLES ────── -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ─── MAIN CONTENT ─────────────── -->
+<div id="main">
+
+  <header>
+    <div class="header-badge">🎓 Revision Hub</div>
+    <h1>Professor Tats<br>Physics &amp; Chemistry</h1>
+    <p>Your go-to science revision companion</p>
+  </header>
+
+  <nav>
+    <a href="the%20gawa%20%20school%20hub.html">🏠 Home</a>
+    <a href="#subjects" class="active">📚 Subjects</a>
+    <a href="#quiz">🧠 Quiz</a>
+    <a href="#formulas">🔬 Formulas</a>
+    <a href="the%20gawa%20%20school%20hub.html">ℹ️ About</a>
+    <a href="contact.html">📬 Contact</a>
+  </nav>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <div class="stat-num" id="cnt1">0</div>
+      <div class="stat-label">Topics Covered</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="cnt2">0</div>
+      <div class="stat-label">Quiz Questions</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="cnt3">0</div>
+      <div class="stat-label">Key Formulas</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="cnt4">0</div>
+      <div class="stat-label">Students Helped</div>
+    </div>
+  </div>
+
+  <!-- SUBJECTS -->
+  <div class="section-title" id="subjects">
+    <h2>Choose Your Subject</h2>
+    <p>Pick a subject to start your revision session</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="subject-card chem">
+      <div class="card-top">⚗️</div>
+      <div class="card-body">
+        <div class="card-tag">Chemistry</div>
+        <h2>Chemistry</h2>
+        <p>From atoms to reactions — master the building blocks of matter.</p>
+        <ul class="topic-list">
+          <li>Atomic Structure</li>
+          <li>Chemical Bonding</li>
+          <li>Acids & Bases</li>
+          <li>Organic Chemistry</li>
+        </ul>
+        <a href="the%20chemistry%20.html" class="card-btn">Start Chemistry →</a>
+      </div>
+    </div>
+
+    <div class="subject-card phys">
+      <div class="card-top">⚡</div>
+      <div class="card-body">
+        <div class="card-tag">Physics</div>
+        <h2>Physics</h2>
+        <p>Discover the laws that govern forces, energy, and the universe.</p>
+        <ul class="topic-list">
+          <li>Newton's Laws</li>
+          <li>Electricity & Magnetism</li>
+          <li>Waves & Light</li>
+          <li>Thermodynamics</li>
+        </ul>
+        <a href="phsics.html" class="card-btn">Start Physics →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section-title" id="quiz">
+    <h2>⚡ Quick Quiz</h2>
+    <p>Test your knowledge — a new question every round</p>
+  </div>
+
+  <div class="quiz-section">
+    <div class="quiz-box">
+      <div class="quiz-header">
+        <h3 id="quiz-subject">🎲 Mixed Questions</h3>
+        <span class="quiz-badge">Live Quiz</span>
+      </div>
+      <div class="quiz-question" id="quiz-q">Loading question...</div>
+      <div class="quiz-options" id="quiz-opts"></div>
+      <div class="quiz-feedback" id="quiz-fb"></div>
+      <div class="quiz-controls">
+        <button class="btn-next" id="nextBtn">Next Question →</button>
+        <span class="quiz-score" id="scoreDisplay">Score: 0 / 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMULAS -->
+  <div class="section-title" id="formulas">
+    <h2>🔬 Key Formulas</h2>
+    <p>Swipe through essential equations</p>
+  </div>
+
+  <div class="formula-section">
+    <div class="formula-scroll" id="formulaScroll"></div>
+  </div>
+
+  <footer>
+    © 2026 <span>Professor Tats Hub</span> &nbsp;·&nbsp; Made with ❤️ for curious minds
+  </footer>
+</div>
+
+<!-- Theme Toggle -->
+<div class="toggle-wrap">
+  <button id="themeBtn" title="Toggle theme">🌙</button>
+</div>
+
+<script>
+// ─── INTRO PARTICLE CANVAS ───────────────────
+const introCanvas = document.getElementById('intro-canvas');
+const ictx = introCanvas.getContext('2d');
+introCanvas.width = window.innerWidth;
+introCanvas.height = window.innerHeight;
+const particles = Array.from({length: 80}, () => ({
+  x: Math.random() * introCanvas.width,
+  y: Math.random() * introCanvas.height,
+  r: Math.random() * 2 + 0.5,
+  vx: (Math.random() - 0.5) * 0.4,
+  vy: (Math.random() - 0.5) * 0.4,
+  a: Math.random()
+}));
+function drawIntro() {
+  ictx.clearRect(0, 0, introCanvas.width, introCanvas.height);
+  particles.forEach(p => {
+    ictx.beginPath();
+    ictx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ictx.fillStyle = `rgba(0,212,170,${p.a * 0.6})`;
+    ictx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > introCanvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > introCanvas.height) p.vy *= -1;
+  });
+  requestAnimationFrame(drawIntro);
+}
+drawIntro();
+
+// ─── BG PARTICLE CANVAS ──────────────────────
+const bgCanvas = document.getElementById('bg-canvas');
+const bctx = bgCanvas.getContext('2d');
+bgCanvas.width = window.innerWidth;
+bgCanvas.height = window.innerHeight;
+const bgParts = Array.from({length: 40}, () => ({
+  x: Math.random() * bgCanvas.width,
+  y: Math.random() * bgCanvas.height,
+  r: Math.random() * 1.5 + 0.5,
+  vx: (Math.random() - 0.5) * 0.2,
+  vy: (Math.random() - 0.5) * 0.2,
+}));
+function drawBg() {
+  bctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  bgParts.forEach(p => {
+    bctx.beginPath();
+    bctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    bctx.fillStyle = 'rgba(0,212,170,0.5)';
+    bctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > bgCanvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > bgCanvas.height) p.vy *= -1;
+  });
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+window.addEventListener('resize', () => {
+  bgCanvas.width = introCanvas.width = window.innerWidth;
+  bgCanvas.height = introCanvas.height = window.innerHeight;
+});
+
+// ─── COUNTER ANIMATION ───────────────────────
+function animCounter(el, target, duration) {
+  let start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    const p = Math.min((ts - start) / duration, 1);
+    el.textContent = Math.floor(p * target) + (target >= 100 ? '+' : '');
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target + (target >= 100 ? '+' : '');
+  }
+  requestAnimationFrame(step);
+}
+setTimeout(() => {
+  animCounter(document.getElementById('cnt1'), 24, 1500);
+  animCounter(document.getElementById('cnt2'), 50, 1500);
+  animCounter(document.getElementById('cnt3'), 18, 1500);
+  animCounter(document.getElementById('cnt4'), 500, 1800);
+}, 7000);
+
+// ─── QUIZ ENGINE ─────────────────────────────
+const questions = [
+  { q: "What is the chemical symbol for Gold?", opts: ["Go","Au","Gd","Ag"], ans: 1, subj: "⚗️ Chemistry" },
+  { q: "What is the unit of electric current?", opts: ["Volt","Ohm","Ampere","Watt"], ans: 2, subj: "⚡ Physics" },
+  { q: "What type of bond involves sharing of electrons?", opts: ["Ionic","Metallic","Covalent","Hydrogen"], ans: 2, subj: "⚗️ Chemistry" },
+  { q: "Newton's 2nd Law states: F = ?", opts: ["mv","ma","mgh","½mv²"], ans: 1, subj: "⚡ Physics" },
+  { q: "What is the pH of a neutral solution?", opts: ["0","7","14","5"], ans: 1, subj: "⚗️ Chemistry" },
+  { q: "What is the speed of light (approx)?", opts: ["3×10⁶ m/s","3×10⁸ m/s","3×10¹⁰ m/s","3×10⁴ m/s"], ans: 1, subj: "⚡ Physics" },
+  { q: "Which gas makes up about 78% of Earth's atmosphere?", opts: ["Oxygen","Carbon dioxide","Argon","Nitrogen"], ans: 3, subj: "⚗️ Chemistry" },
+  { q: "What is the formula for kinetic energy?", opts: ["mgh","Fd","½mv²","ma"], ans: 2, subj: "⚡ Physics" },
+  { q: "An atom with more electrons than protons is called a:", opts: ["Isotope","Cation","Anion","Neutron"], ans: 2, subj: "⚗️ Chemistry" },
+  { q: "What does a voltmeter measure?", opts: ["Current","Resistance","Power","Voltage"], ans: 3, subj: "⚡ Physics" },
+];
+
+let qIndex = 0, score = 0, total = 0, answered = false;
+const qOrder = [...Array(questions.length).keys()].sort(() => Math.random() - 0.5);
+
+function loadQ() {
+  answered = false;
+  const q = questions[qOrder[qIndex % questions.length]];
+  document.getElementById('quiz-q').textContent = q.q;
+  document.getElementById('quiz-subject').textContent = q.subj;
+  document.getElementById('quiz-fb').textContent = '';
+  const opts = document.getElementById('quiz-opts');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = o;
+    btn.onclick = () => {
+      if (answered) return;
+      answered = true; total++;
+      if (i === q.ans) {
+        btn.classList.add('correct');
+        score++;
+        document.getElementById('quiz-fb').textContent = '✅ Correct! Well done!';
+        document.getElementById('quiz-fb').style.color = 'var(--teal)';
+      } else {
+        btn.classList.add('wrong');
+        opts.children[q.ans].classList.add('correct');
+        document.getElementById('quiz-fb').textContent = `❌ Not quite. The answer is: ${q.opts[q.ans]}`;
+        document.getElementById('quiz-fb').style.color = '#ff5050';
+      }
+      document.getElementById('scoreDisplay').textContent = `Score: ${score} / ${total}`;
+    };
+    opts.appendChild(btn);
+  });
+}
+
+document.getElementById('nextBtn').onclick = () => { qIndex++; loadQ(); };
+setTimeout(loadQ, 7200);
+
+// ─── FORMULA CARDS ───────────────────────────
+const formulas = [
+  { label: 'Physics', eq: 'F = ma', name: "Newton's 2nd Law" },
+  { label: 'Physics', eq: 'v = u + at', name: 'Equations of Motion' },
+  { label: 'Physics', eq: 'E = mc²', name: "Mass-Energy Equivalence" },
+  { label: 'Physics', eq: 'KE = ½mv²', name: 'Kinetic Energy' },
+  { label: 'Physics', eq: 'V = IR', name: "Ohm's Law" },
+  { label: 'Chemistry', eq: 'PV = nRT', name: 'Ideal Gas Law' },
+  { label: 'Chemistry', eq: 'pH = -log[H⁺]', name: 'pH Formula' },
+  { label: 'Chemistry', eq: 'Q = mcΔT', name: 'Heat Energy' },
+  { label: 'Physics', eq: 'W = Fd', name: 'Work Done' },
+  { label: 'Physics', eq: 'P = W/t', name: 'Power' },
+];
+
+const fs = document.getElementById('formulaScroll');
+formulas.forEach(f => {
+  const div = document.createElement('div');
+  div.className = 'formula-card';
+  div.innerHTML = `<div class="formula-label">${f.label}</div><div class="formula-eq">${f.eq}</div><div class="formula-name">${f.name}</div>`;
+  fs.appendChild(div);
+});
+
+// ─── THEME TOGGLE ─────────────────────────────
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.onclick = () => {
+  document.body.classList.toggle('light');
+  themeBtn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+};
+
+// ─── SMOOTH SCROLL NAV ────────────────────────
+document.querySelectorAll('nav a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

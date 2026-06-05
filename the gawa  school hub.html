@@ -1,0 +1,1272 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professor Tats – Physics & Chemistry Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── CSS VARIABLES ─────────────────────────────────────── */
+:root {
+  --bg: #0b0f1a;
+  --surface: #141929;
+  --surface2: #1c2438;
+  --border: rgba(255,255,255,0.07);
+  --accent-chem: #00e5b4;
+  --accent-phys: #7c8fff;
+  --accent-red: #ff6b6b;
+  --text: #e8eaf0;
+  --text-muted: #7a8296;
+  --radius: 16px;
+  --glow-chem: 0 0 40px rgba(0,229,180,0.15);
+  --glow-phys: 0 0 40px rgba(124,143,255,0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── INTRO SCREEN ──────────────────────────────────────── */
+#intro {
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 40% 50%, #0d1b3e 0%, #050810 100%);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 1.5rem;
+  z-index: 999;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#intro.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.intro-orbs {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.orb1 { width: 400px; height: 400px; background: rgba(0,229,180,0.12); top: -100px; left: -100px; }
+.orb2 { width: 350px; height: 350px; background: rgba(124,143,255,0.10); bottom: -80px; right: -80px; animation-delay: -3s; }
+.orb3 { width: 200px; height: 200px; background: rgba(255,107,107,0.08); top: 50%; left: 50%; animation-delay: -5s; }
+@keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-30px) scale(1.05);} }
+
+.intro-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.1;
+}
+.intro-title span { display: inline-block; opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.intro-title span.vis { opacity: 1; transform: translateY(0); }
+.intro-title .g { background: linear-gradient(135deg, var(--accent-chem), var(--accent-phys)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.intro-sub { color: var(--text-muted); font-size: 1.1rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity 0.6s ease 1.4s; }
+.intro-sub.vis { opacity: 1; }
+
+.intro-loader {
+  width: 200px; height: 3px;
+  background: var(--surface2);
+  border-radius: 99px;
+  overflow: hidden;
+  opacity: 0; transition: opacity 0.4s ease 1.6s;
+}
+.intro-loader.vis { opacity: 1; }
+.intro-loader-bar {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--accent-chem), var(--accent-phys));
+  border-radius: 99px;
+  transition: width 2s ease;
+}
+
+/* ─── HEADER ─────────────────────────────────────────────── */
+header {
+  padding: 1.5rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+  background: rgba(11,15,26,0.85);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 1.3rem;
+}
+.logo .dot { color: var(--accent-chem); }
+nav { display: flex; gap: 1.5rem; }
+nav a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+nav a:hover { color: var(--text); }
+
+/* ─── HERO ───────────────────────────────────────────────── */
+.hero {
+  padding: 5rem 2rem 3rem;
+  text-align: center;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 800; line-height: 1.15;
+}
+.hero h1 .grad-c { background: linear-gradient(135deg, var(--accent-chem), #00b89a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero h1 .grad-p { background: linear-gradient(135deg, var(--accent-phys), #b48aff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { color: var(--text-muted); margin-top: 1rem; font-size: 1.05rem; max-width: 540px; margin-inline: auto; line-height: 1.7; }
+
+/* ─── SUBJECT CARDS ──────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  max-width: 820px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+.subject-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+  position: relative; overflow: hidden;
+}
+.subject-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  transition: opacity 0.3s;
+}
+.subject-card.chem::before { background: linear-gradient(90deg, var(--accent-chem), transparent); }
+.subject-card.phys::before { background: linear-gradient(90deg, var(--accent-phys), transparent); }
+.subject-card:hover { transform: translateY(-6px); }
+.subject-card.chem:hover { box-shadow: var(--glow-chem); border-color: rgba(0,229,180,0.3); }
+.subject-card.phys:hover { box-shadow: var(--glow-phys); border-color: rgba(124,143,255,0.3); }
+.subject-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.subject-card h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; }
+.subject-card.chem h2 { color: var(--accent-chem); }
+.subject-card.phys h2 { color: var(--accent-phys); }
+.subject-card p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.6; }
+.subject-card .cta {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 1.5rem; font-size: 0.85rem; font-weight: 600;
+  padding: 0.5rem 1.2rem; border-radius: 99px; border: none;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.subject-card.chem .cta { background: rgba(0,229,180,0.15); color: var(--accent-chem); }
+.subject-card.phys .cta { background: rgba(124,143,255,0.15); color: var(--accent-phys); }
+.subject-card .cta:hover { opacity: 0.75; }
+
+/* ─── PAPER MODAL ─────────────────────────────────────────── */
+#modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+  z-index: 500; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+#modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%; max-width: 860px;
+  max-height: 92vh; overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+  animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(0.92) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
+
+.modal-close {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: var(--surface2); border: none; color: var(--text-muted);
+  width: 36px; height: 36px; border-radius: 50%;
+  cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.modal-close:hover { background: var(--border); color: var(--text); }
+
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.7rem; font-weight: 800; margin-bottom: 0.3rem;
+}
+.modal-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+.papers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.paper-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.paper-card:hover { transform: translateY(-4px); }
+.paper-card.chem:hover { border-color: rgba(0,229,180,0.4); box-shadow: 0 0 20px rgba(0,229,180,0.1); }
+.paper-card.phys:hover { border-color: rgba(124,143,255,0.4); box-shadow: 0 0 20px rgba(124,143,255,0.1); }
+.paper-badge {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.25rem 0.7rem;
+  border-radius: 99px; margin-bottom: 0.8rem;
+}
+.chem .paper-badge { background: rgba(0,229,180,0.15); color: var(--accent-chem); }
+.phys .paper-badge { background: rgba(124,143,255,0.15); color: var(--accent-phys); }
+.paper-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+.paper-card p { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.5; }
+.paper-meta { display: flex; gap: 0.8rem; margin-top: 0.8rem; }
+.paper-meta span {
+  font-size: 0.72rem; color: var(--text-muted);
+  background: rgba(255,255,255,0.05); border-radius: 6px; padding: 0.2rem 0.5rem;
+}
+
+/* ─── PRACTICE SCREEN ─────────────────────────────────────── */
+#practice-screen {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 600;
+  overflow-y: auto;
+  flex-direction: column;
+}
+#practice-screen.open { display: flex; }
+
+.practice-header {
+  padding: 1.2rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(11,15,26,0.9); backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 10;
+}
+.practice-meta { font-size: 0.85rem; color: var(--text-muted); }
+.practice-meta strong { color: var(--text); }
+
+.btn-back {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); padding: 0.5rem 1rem; border-radius: 8px;
+  cursor: pointer; font-size: 0.85rem; transition: background 0.2s;
+}
+.btn-back:hover { background: var(--surface); }
+
+.practice-body {
+  flex: 1;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Voice Panel */
+.voice-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.voice-status {
+  display: flex; align-items: center; gap: 0.7rem; flex: 1;
+}
+.voice-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.voice-dot.listening {
+  background: var(--accent-red);
+  box-shadow: 0 0 10px var(--accent-red);
+  animation: pulse 1s infinite;
+}
+.voice-dot.speaking {
+  background: var(--accent-chem);
+  box-shadow: 0 0 10px var(--accent-chem);
+  animation: pulse 0.8s infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.3);} }
+.voice-label { font-size: 0.85rem; color: var(--text-muted); }
+
+.voice-controls { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+.btn-voice {
+  padding: 0.5rem 1.1rem; border-radius: 99px;
+  border: none; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.btn-voice:hover { opacity: 0.85; transform: scale(0.98); }
+.btn-voice:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.btn-read { background: rgba(124,143,255,0.2); color: var(--accent-phys); }
+.btn-listen { background: rgba(255,107,107,0.2); color: var(--accent-red); }
+.btn-stop { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+
+/* Question Card */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.q-number {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted); margin-bottom: 0.8rem;
+}
+.q-text {
+  font-size: 1.05rem; line-height: 1.75; color: var(--text);
+  white-space: pre-wrap;
+}
+.q-marks {
+  display: inline-block; margin-top: 0.8rem;
+  background: rgba(255,255,255,0.06); border-radius: 6px;
+  padding: 0.2rem 0.6rem; font-size: 0.78rem; color: var(--text-muted);
+}
+
+/* MCQ Options */
+.mcq-options { margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.mcq-option {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1.2rem;
+  cursor: pointer; font-size: 0.9rem;
+  transition: border-color 0.2s, background 0.2s;
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.mcq-option:hover:not(.selected):not(.correct):not(.wrong) { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+.mcq-option.selected { border-color: var(--accent-phys); background: rgba(124,143,255,0.08); }
+.mcq-option.correct { border-color: var(--accent-chem); background: rgba(0,229,180,0.08); }
+.mcq-option.wrong { border-color: var(--accent-red); background: rgba(255,107,107,0.08); }
+.mcq-label {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+}
+
+/* Answer Area */
+.answer-area {
+  display: flex; flex-direction: column; gap: 1rem;
+  margin-top: 1rem;
+}
+.answer-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; color: var(--text);
+  resize: vertical; min-height: 120px;
+  outline: none; transition: border-color 0.2s;
+  width: 100%;
+}
+.answer-box:focus { border-color: rgba(124,143,255,0.4); }
+.answer-box::placeholder { color: var(--text-muted); }
+.answer-box.voice-filled { border-color: rgba(255,107,107,0.4); }
+
+.btn-submit {
+  padding: 0.75rem 2rem;
+  border: none; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-chem), var(--accent-phys));
+  color: #0b0f1a; font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+  align-self: flex-start;
+}
+.btn-submit:hover { opacity: 0.9; transform: scale(0.98); }
+.btn-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* Feedback */
+.feedback-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+  margin-top: 1.5rem;
+  display: none;
+}
+.feedback-card.show { display: block; animation: slideUp 0.4s ease; }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+.feedback-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+.feedback-score {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
+}
+.feedback-score.high { background: rgba(0,229,180,0.2); color: var(--accent-chem); }
+.feedback-score.mid { background: rgba(255,200,80,0.2); color: #ffc850; }
+.feedback-score.low { background: rgba(255,107,107,0.2); color: var(--accent-red); }
+.feedback-title { font-family: 'Syne', sans-serif; font-weight: 700; }
+.feedback-text { font-size: 0.9rem; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+.model-answer {
+  margin-top: 1.2rem; padding: 1rem;
+  background: rgba(0,229,180,0.06);
+  border-left: 3px solid var(--accent-chem);
+  border-radius: 0 8px 8px 0;
+}
+.model-answer-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-chem); margin-bottom: 0.5rem; }
+.model-answer-text { font-size: 0.88rem; line-height: 1.7; color: var(--text); }
+
+.btn-next {
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.8rem;
+  border-radius: 99px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text);
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-next:hover { background: var(--surface); border-color: rgba(255,255,255,0.2); }
+
+/* Loading spinner */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-top-color: var(--accent-phys);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block; vertical-align: middle;
+  margin-right: 0.5rem;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+
+/* Progress bar */
+.progress-bar-wrap {
+  height: 4px; background: var(--surface2); border-radius: 99px;
+  margin-bottom: 1.5rem; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--accent-chem), var(--accent-phys));
+  border-radius: 99px; transition: width 0.5s ease;
+}
+
+/* Voice transcript bubble */
+.voice-transcript {
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.25);
+  border-radius: 10px; padding: 0.8rem 1rem;
+  font-size: 0.85rem; color: var(--text-muted);
+  display: none; margin-top: 0.5rem;
+}
+.voice-transcript.show { display: block; }
+.voice-transcript strong { color: var(--text); }
+
+/* Score summary */
+.score-summary {
+  text-align: center; padding: 3rem 2rem;
+  display: none;
+}
+.score-summary.show { display: block; animation: modalIn 0.5s ease; }
+.score-big {
+  font-family: 'Syne', sans-serif;
+  font-size: 5rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-chem), var(--accent-phys));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.score-summary p { color: var(--text-muted); margin-top: 0.5rem; font-size: 1rem; }
+.score-summary .btn-restart {
+  margin-top: 2rem;
+  padding: 0.8rem 2.5rem; border-radius: 99px; border: none;
+  background: linear-gradient(135deg, var(--accent-chem), var(--accent-phys));
+  color: #0b0f1a; font-weight: 700; font-size: 1rem; cursor: pointer;
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem; text-align: center;
+  color: var(--text-muted); font-size: 0.85rem;
+}
+
+/* ─── UTILITY ─────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.tag {
+  display: inline-block; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.2rem 0.6rem; border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.tag.chem { background: rgba(0,229,180,0.12); color: var(--accent-chem); }
+.tag.phys { background: rgba(124,143,255,0.12); color: var(--accent-phys); }
+
+@media(max-width:600px) {
+  .practice-body { padding: 1rem; }
+  .modal { padding: 1.5rem; }
+  .papers-grid { grid-template-columns: 1fr; }
+  .voice-panel { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── INTRO ─────────────────────────────────────────────── -->
+<div id="intro">
+  <div class="intro-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="intro-title">
+    <span id="w1">Professor&nbsp;</span><span id="w2" class="g">Tats</span><br>
+    <span id="w3">Science&nbsp;</span><span id="w4">Hub</span>
+  </div>
+  <div class="intro-sub" id="introSub">IGCSE O-Level · AI-Powered Practice</div>
+  <div class="intro-loader" id="introLoader">
+    <div class="intro-loader-bar" id="introBar"></div>
+  </div>
+</div>
+
+<!-- ─── MAIN CONTENT ──────────────────────────────────────── -->
+<div id="main-content" style="opacity:0;transition:opacity 0.8s ease;">
+  <header>
+    <div class="logo">Prof<span class="dot">.</span>Tats</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Papers</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>Master <span class="grad-c">Chemistry</span> &<br><span class="grad-p">Physics</span> with AI</h1>
+    <p>Cambridge IGCSE O-Level practice across all 6 paper variants. AI-generated questions, voice interaction, and intelligent marking feedback.</p>
+  </div>
+
+  <div class="cards-grid">
+    <div class="subject-card chem" onclick="openSubject('chemistry')">
+      <div class="icon">⚗️</div>
+      <h2>Chemistry</h2>
+      <p>Atomic structure, bonding, reactions, organic chemistry and more. Papers 1–6 aligned to Cambridge (0620).</p>
+      <button class="cta">Choose Paper →</button>
+    </div>
+    <div class="subject-card phys" onclick="openSubject('physics')">
+      <div class="icon">⚡</div>
+      <h2>Physics</h2>
+      <p>Forces, energy, waves, electricity and nuclear physics. Papers 1–6 aligned to Cambridge (0625).</p>
+      <button class="cta">Choose Paper →</button>
+    </div>
+  </div>
+
+  <footer>© 2026 Professor Tats Hub · Cambridge IGCSE 0620 / 0625</footer>
+</div>
+
+<!-- ─── PAPER SELECTION MODAL ──────────────────────────────── -->
+<div id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-title" class="modal-title"></div>
+    <div class="modal-sub">Select a paper to begin AI-powered practice</div>
+    <div id="papers-grid" class="papers-grid"></div>
+  </div>
+</div>
+
+<!-- ─── PRACTICE SCREEN ────────────────────────────────────── -->
+<div id="practice-screen">
+  <div class="practice-header">
+    <div>
+      <div class="practice-meta"><strong id="ps-subject"></strong> · <span id="ps-paper"></span></div>
+      <div class="practice-meta" style="margin-top:0.2rem">Question <span id="ps-qnum">1</span> of <span id="ps-qtotal">10</span></div>
+    </div>
+    <div style="display:flex;gap:0.7rem">
+      <div id="ps-score-badge" style="padding:0.4rem 1rem;background:var(--surface2);border-radius:99px;font-size:0.82rem;">Score: <span id="ps-score">0</span></div>
+      <button class="btn-back" onclick="exitPractice()">← Exit</button>
+    </div>
+  </div>
+
+  <div class="practice-body">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Voice Panel -->
+    <div class="voice-panel">
+      <div class="voice-status">
+        <div class="voice-dot" id="voice-dot"></div>
+        <span class="voice-label" id="voice-label">Voice ready</span>
+      </div>
+      <div class="voice-controls">
+        <button class="btn-voice btn-read" id="btn-read-q" onclick="readQuestion()">🔊 Read Question</button>
+        <button class="btn-voice btn-listen" id="btn-listen" onclick="startListening()">🎤 Answer Aloud</button>
+        <button class="btn-voice btn-stop" id="btn-stop" onclick="stopAll()">⏹ Stop</button>
+      </div>
+    </div>
+    <div class="voice-transcript" id="voice-transcript">
+      <strong>Your spoken answer:</strong> <span id="transcript-text"></span>
+    </div>
+
+    <!-- Question + answer area -->
+    <div id="question-area"></div>
+
+    <!-- Score summary -->
+    <div class="score-summary" id="score-summary">
+      <div class="score-big" id="final-score-big"></div>
+      <p id="final-score-msg"></p>
+      <button class="btn-restart" onclick="restartSession()">Try Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA: IGCSE Paper Definitions
+// ─────────────────────────────────────────────────────────────
+const PAPERS = {
+  chemistry: [
+    {
+      num: 1,
+      name: "Multiple Choice (Core)",
+      desc: "40 MCQ questions on core chemistry topics. 45 minutes.",
+      marks: 40, time: "45 min", type: "mcq", tier: "Core",
+      topics: ["Atomic structure","Chemical bonding","Formulae & equations","Acids, bases & salts","Reactivity series","Organic chemistry","Experimental chemistry"]
+    },
+    {
+      num: 2,
+      name: "Core Theory",
+      desc: "Structured questions covering core curriculum. 1 hr 15 min.",
+      marks: 80, time: "1h 15m", type: "structured", tier: "Core",
+      topics: ["States of matter","Atomic structure","Chemical bonding","Chemical reactions","Acids & bases","Electrochemistry","Organic chemistry"]
+    },
+    {
+      num: 3,
+      name: "Extended Theory",
+      desc: "Extended structured questions — more depth and calculation. 1 hr 15 min.",
+      marks: 80, time: "1h 15m", type: "structured", tier: "Extended",
+      topics: ["Particle model","Bonding & structure","Stoichiometry","Redox chemistry","Energetics","Rates of reaction","Organic synthesis"]
+    },
+    {
+      num: 4,
+      name: "Coursework",
+      desc: "School-based assessment of practical skills and investigations.",
+      marks: 40, time: "Throughout year", type: "coursework", tier: "All",
+      topics: ["Planning experiments","Collecting data","Analysis & evaluation","Drawing conclusions","Risk assessment"]
+    },
+    {
+      num: 5,
+      name: "Practical Test",
+      desc: "Supervised lab practical — plan, carry out and evaluate an experiment. 1 hr 15 min.",
+      marks: 40, time: "1h 15m", type: "structured", tier: "All",
+      topics: ["Titration technique","Identifying ions","Preparing salts","Chromatography","Electrolysis","Rate of reaction experiments","Identifying gases"]
+    },
+    {
+      num: 6,
+      name: "Alternative to Practical",
+      desc: "Written paper testing practical knowledge and data handling. 1 hour.",
+      marks: 40, time: "1h", type: "structured", tier: "All",
+      topics: ["Planning & safety","Reading apparatus","Data collection & tables","Graph drawing","Analysis & conclusions","Sources of error","Improving experiments"]
+    }
+  ],
+  physics: [
+    {
+      num: 1,
+      name: "Multiple Choice (Core)",
+      desc: "40 MCQ questions on core physics topics. 45 minutes.",
+      marks: 40, time: "45 min", type: "mcq", tier: "Core",
+      topics: ["Motion","Forces","Energy","Waves","Light & sound","Electricity","Magnetism","Nuclear physics"]
+    },
+    {
+      num: 2,
+      name: "Core Theory",
+      desc: "Structured questions covering core curriculum. 1 hr 15 min.",
+      marks: 80, time: "1h 15m", type: "structured", tier: "Core",
+      topics: ["General physics","Thermal physics","Waves","Electricity","Magnetism","Atomic physics"]
+    },
+    {
+      num: 3,
+      name: "Extended Theory",
+      desc: "Extended structured questions — calculations and deeper analysis. 1 hr 15 min.",
+      marks: 80, time: "1h 15m", type: "structured", tier: "Extended",
+      topics: ["Kinematics & dynamics","Momentum","Pressure","Thermal properties","Electromagnetic spectrum","Circuit analysis","Electromagnetic induction","Nuclear decay"]
+    },
+    {
+      num: 4,
+      name: "Coursework",
+      desc: "School-based assessment of practical investigations.",
+      marks: 40, time: "Throughout year", type: "coursework", tier: "All",
+      topics: ["Experimental design","Data collection","Uncertainty analysis","Graphs & gradients","Evaluation","Scientific writing"]
+    },
+    {
+      num: 5,
+      name: "Practical Test",
+      desc: "Supervised practical exam testing hands-on physics skills. 1 hr 15 min.",
+      marks: 40, time: "1h 15m", type: "structured", tier: "All",
+      topics: ["Measuring speed & acceleration","Springs & Hooke's Law","Specific heat capacity","Optics experiments","Circuit building","Density measurements","Pendulum timing"]
+    },
+    {
+      num: 6,
+      name: "Alternative to Practical",
+      desc: "Written paper assessing practical skills without lab work. 1 hour.",
+      marks: 40, time: "1h", type: "structured", tier: "All",
+      topics: ["Experimental planning","Reading instruments","Tabulating data","Graph plotting & analysis","Identifying errors","Suggesting improvements","Drawing conclusions"]
+    }
+  ]
+};
+
+// ─────────────────────────────────────────────────────────────
+// INTRO ANIMATION
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const delays = [0, 300, 600, 900];
+  ['w1','w2','w3','w4'].forEach((id,i) => {
+    setTimeout(() => document.getElementById(id).classList.add('vis'), 400 + delays[i]);
+  });
+  setTimeout(() => document.getElementById('introSub').classList.add('vis'), 1200);
+  setTimeout(() => {
+    const l = document.getElementById('introLoader');
+    l.classList.add('vis');
+    setTimeout(() => document.getElementById('introBar').style.width = '100%', 50);
+  }, 1500);
+  setTimeout(() => {
+    document.getElementById('intro').classList.add('hide');
+    document.getElementById('main-content').style.opacity = '1';
+  }, 3800);
+});
+
+// ─────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────
+let currentSubject = '';
+let currentPaper = null;
+let currentQuestions = [];
+let currentQIndex = 0;
+let sessionScore = 0;
+let sessionTotal = 0;
+let synth = window.speechSynthesis;
+let recognition = null;
+let isListening = false;
+let isSpeaking = false;
+
+// ─────────────────────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────────────────────
+function openSubject(subject) {
+  currentSubject = subject;
+  const papers = PAPERS[subject];
+  const cls = subject === 'chemistry' ? 'chem' : 'phys';
+  document.getElementById('modal-title').innerHTML = 
+    `<span class="tag ${cls}">${subject.toUpperCase()}</span><br>${subject === 'chemistry' ? '⚗️ Cambridge IGCSE Chemistry (0620)' : '⚡ Cambridge IGCSE Physics (0625)'}`;
+  
+  const grid = document.getElementById('papers-grid');
+  grid.innerHTML = '';
+  papers.forEach(p => {
+    const card = document.createElement('div');
+    card.className = `paper-card ${cls}`;
+    card.onclick = () => { closeModal(); startPractice(subject, p); };
+    card.innerHTML = `
+      <div class="paper-badge">Paper ${p.num}</div>
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <div class="paper-meta">
+        <span>📋 ${p.marks} marks</span>
+        <span>⏱ ${p.time}</span>
+        <span>${p.tier}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+// ─────────────────────────────────────────────────────────────
+// PRACTICE SESSION
+// ─────────────────────────────────────────────────────────────
+async function startPractice(subject, paper) {
+  currentPaper = paper;
+  currentSubject = subject;
+  currentQuestions = [];
+  currentQIndex = 0;
+  sessionScore = 0;
+  sessionTotal = 0;
+
+  document.getElementById('ps-subject').textContent = subject.charAt(0).toUpperCase() + subject.slice(1);
+  document.getElementById('ps-paper').textContent = `Paper ${paper.num} – ${paper.name}`;
+  document.getElementById('ps-score').textContent = '0';
+  document.getElementById('ps-qtotal').textContent = paper.type === 'mcq' ? 5 : 4;
+  document.getElementById('score-summary').classList.remove('show');
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('voice-transcript').classList.remove('show');
+
+  document.getElementById('practice-screen').classList.add('open');
+  document.getElementById('question-area').innerHTML = `<div class="q-card" style="text-align:center;padding:3rem"><div class="spinner"></div> Generating questions with AI…</div>`;
+
+  await generateQuestions();
+  renderQuestion();
+}
+
+async function generateQuestions() {
+  const p = currentPaper;
+  const isMCQ = p.type === 'mcq';
+  const count = isMCQ ? 5 : 4;
+  const topicList = p.topics.join(', ');
+
+  const prompt = isMCQ
+    ? `You are a Cambridge IGCSE ${currentSubject} examiner. Generate exactly ${count} multiple-choice questions for Paper ${p.num} (${p.name}, ${p.tier} tier) for Cambridge IGCSE ${currentSubject} (syllabus 0${currentSubject === 'chemistry' ? '620' : '625'}).
+
+Topics to cover: ${topicList}
+
+STRICT FORMAT — return only a JSON array, no markdown fences, no extra text:
+[
+  {
+    "q": "question text",
+    "options": ["A. option","B. option","C. option","D. option"],
+    "answer": "A",
+    "explanation": "brief explanation of correct answer"
+  }
+]
+
+Requirements:
+- Questions must be accurate Cambridge IGCSE standard
+- Options must be A, B, C, D format
+- answer field is just the letter: A, B, C, or D
+- Vary across the topics listed
+- ${p.tier === 'Core' ? 'Keep at core level, no extended content' : 'Include extended content and calculations'}`
+
+    : `You are a Cambridge IGCSE ${currentSubject} examiner. Generate exactly ${count} structured questions for Paper ${p.num} (${p.name}, ${p.tier} tier) for Cambridge IGCSE ${currentSubject} (syllabus 0${currentSubject === 'chemistry' ? '620' : '625'}).
+
+Topics to cover: ${topicList}
+
+STRICT FORMAT — return only a JSON array, no markdown fences, no extra text:
+[
+  {
+    "q": "question text (include any data/context needed)",
+    "marks": 3,
+    "model_answer": "detailed model answer with key marking points",
+    "mark_scheme": ["marking point 1","marking point 2","marking point 3"]
+  }
+]
+
+Requirements:
+- Questions must be accurate Cambridge IGCSE standard
+- marks field: 2-5 marks per question
+- model_answer must reflect actual Cambridge mark scheme style
+- Include calculation questions where appropriate (${p.tier})
+- Vary across different topic areas
+- For Paper ${p.num} (${p.name}), focus on ${topicList}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: 'You are a Cambridge IGCSE examiner. Return only valid JSON arrays. No markdown, no fences, no explanation outside the JSON.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let raw = data.content.map(c => c.text || '').join('');
+    raw = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(raw);
+    currentQuestions = parsed;
+  } catch(e) {
+    // Fallback questions
+    currentQuestions = getFallbackQuestions();
+  }
+}
+
+function getFallbackQuestions() {
+  if (currentPaper.type === 'mcq') {
+    return currentSubject === 'chemistry' ? [
+      { q: "Which particle determines the chemical properties of an atom?", options: ["A. Neutron","B. Proton","C. Electron","D. Nucleus"], answer: "C", explanation: "Electrons occupy outer shells and determine how atoms bond, giving each element its chemical properties." },
+      { q: "What is the formula for sulfuric acid?", options: ["A. HCl","B. HNO₃","C. H₂SO₄","D. H₃PO₄"], answer: "C", explanation: "Sulfuric acid is H₂SO₄, a diprotic strong acid." },
+      { q: "Which gas is produced when zinc reacts with dilute hydrochloric acid?", options: ["A. Oxygen","B. Chlorine","C. Carbon dioxide","D. Hydrogen"], answer: "D", explanation: "Zn + 2HCl → ZnCl₂ + H₂. Hydrogen gas is evolved." },
+      { q: "What type of bonding is present in sodium chloride?", options: ["A. Covalent","B. Ionic","C. Metallic","D. Hydrogen"], answer: "B", explanation: "NaCl forms ionic bonds — Na⁺ and Cl⁻ ions held by electrostatic attraction." },
+      { q: "What is the pH of a neutral solution at 25°C?", options: ["A. 0","B. 5","C. 7","D. 14"], answer: "C", explanation: "pH 7 is neutral at 25°C, where [H⁺] = [OH⁻] = 10⁻⁷ mol/dm³." }
+    ] : [
+      { q: "A car travels 100 m in 5 s at constant speed. What is its speed?", options: ["A. 10 m/s","B. 20 m/s","C. 500 m/s","D. 0.05 m/s"], answer: "B", explanation: "Speed = distance/time = 100/5 = 20 m/s." },
+      { q: "Which type of energy is stored in a stretched spring?", options: ["A. Kinetic energy","B. Thermal energy","C. Elastic potential energy","D. Gravitational potential energy"], answer: "C", explanation: "A stretched spring stores elastic potential energy." },
+      { q: "What is the unit of electric current?", options: ["A. Volt","B. Ohm","C. Watt","D. Ampere"], answer: "D", explanation: "Electric current is measured in Amperes (A)." },
+      { q: "Sound waves are which type of wave?", options: ["A. Transverse","B. Longitudinal","C. Electromagnetic","D. Transverse and longitudinal"], answer: "B", explanation: "Sound waves are longitudinal — particles vibrate parallel to the direction of travel." },
+      { q: "An object has mass 2 kg. On Earth (g = 10 N/kg), its weight is:", options: ["A. 0.2 N","B. 2 N","C. 12 N","D. 20 N"], answer: "D", explanation: "Weight = mg = 2 × 10 = 20 N." }
+    ];
+  } else {
+    return currentSubject === 'chemistry' ? [
+      { q: "Explain why metals conduct electricity in the solid state.", marks: 3, model_answer: "Metals have a lattice of positive ions surrounded by a sea of delocalised electrons. These free electrons can move through the lattice when a potential difference is applied, carrying charge and allowing electrical conduction.", mark_scheme: ["Delocalised/free electrons present (1)","Electrons can move when voltage/pd applied (1)","Electrons carry charge, allowing current flow (1)"] },
+      { q: "State and explain what happens to the rate of a chemical reaction when the temperature is increased.", marks: 3, model_answer: "The rate increases because particles have more kinetic energy, move faster, collide more frequently, and a greater proportion of collisions exceed the activation energy.", mark_scheme: ["Rate increases (1)","Particles have more kinetic energy / move faster (1)","More collisions with energy ≥ activation energy (1)"] },
+      { q: "A solution of sodium hydroxide (NaOH) has a concentration of 2 mol/dm³. Calculate the number of moles of NaOH in 250 cm³ of this solution.", marks: 2, model_answer: "n = c × V = 2 × 0.250 = 0.5 mol", mark_scheme: ["Correct conversion: 250 cm³ = 0.250 dm³ (1)","n = 2 × 0.250 = 0.5 mol (1)"] },
+      { q: "Describe what you would observe and write a balanced equation when copper(II) oxide is added to dilute sulfuric acid.", marks: 4, model_answer: "The black copper(II) oxide solid gradually dissolves in the acid. The solution turns blue. Equation: CuO + H₂SO₄ → CuSO₄ + H₂O", mark_scheme: ["Black solid dissolves (1)","Solution turns blue (1)","Correct formulae in equation (1)","Equation balanced (1)"] }
+    ] : [
+      { q: "A ball is dropped from rest and falls 20 m under gravity (g = 10 m/s²). Calculate its velocity just before it hits the ground.", marks: 3, model_answer: "Using v² = u² + 2as: v² = 0 + 2(10)(20) = 400, v = 20 m/s", mark_scheme: ["Correct equation used v² = u² + 2as (1)","Correct substitution (1)","v = 20 m/s with unit (1)"] },
+      { q: "Explain how a transformer works to step up voltage.", marks: 4, model_answer: "An alternating current in the primary coil creates a changing magnetic field in the iron core. This changing field induces an alternating EMF in the secondary coil. The secondary coil has more turns than the primary, so a higher voltage is induced. Vp/Vs = Np/Ns.", mark_scheme: ["AC in primary creates changing magnetic field (1)","Field passes through iron core (1)","Changing field induces EMF in secondary (1)","More turns in secondary → higher voltage (1)"] },
+      { q: "State Ohm's Law and describe an experiment to verify it.", marks: 3, model_answer: "Ohm's Law: V = IR (voltage is directly proportional to current at constant temperature). Experiment: connect resistor in series with ammeter, voltmeter in parallel. Vary voltage supply, record V and I. Plot V-I graph — straight line through origin confirms Ohm's Law.", mark_scheme: ["V = IR or correct statement of proportionality (1)","Circuit described with ammeter and voltmeter (1)","V-I graph mentioned — straight line through origin (1)"] },
+      { q: "A radioactive source emits alpha particles. Explain why alpha radiation is the most ionising but least penetrating type of radiation.", marks: 3, model_answer: "Alpha particles are large (helium nuclei) with a charge of +2. Their large mass and charge means they interact strongly with air molecules, losing energy quickly. They cause many ionisation events per unit length but are stopped after a few centimetres in air.", mark_scheme: ["Alpha is a large particle / helium nucleus / +2 charge (1)","Strong interaction with matter / many ionisations per cm (1)","Loses energy rapidly so stopped in short distance (1)"] }
+    ];
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// RENDER QUESTION
+// ─────────────────────────────────────────────────────────────
+function renderQuestion() {
+  const total = currentQuestions.length;
+  if (currentQIndex >= total) {
+    showSummary();
+    return;
+  }
+
+  document.getElementById('ps-qnum').textContent = currentQIndex + 1;
+  document.getElementById('ps-qtotal').textContent = total;
+  document.getElementById('progress-bar').style.width = `${(currentQIndex / total) * 100}%`;
+  document.getElementById('voice-transcript').classList.remove('show');
+  document.getElementById('transcript-text').textContent = '';
+
+  const q = currentQuestions[currentQIndex];
+  const isMCQ = !!q.options;
+  const cls = currentSubject === 'chemistry' ? 'chem' : 'phys';
+
+  let html = `
+    <div class="q-card">
+      <div class="q-number"><span class="tag ${cls}">${currentSubject.toUpperCase()} · Paper ${currentPaper.num}</span> &nbsp; Question ${currentQIndex + 1}</div>
+      <div class="q-text">${q.q}</div>
+      ${!isMCQ ? `<div class="q-marks">[${q.marks} mark${q.marks > 1 ? 's' : ''}]</div>` : ''}
+  `;
+
+  if (isMCQ) {
+    html += `<div class="mcq-options" id="mcq-options">`;
+    q.options.forEach((opt, i) => {
+      const letters = ['A','B','C','D'];
+      html += `<div class="mcq-option" id="opt-${i}" onclick="selectMCQ(${i})">
+        <span class="mcq-label">${letters[i]}</span>
+        <span>${opt.replace(/^[ABCD]\.\s*/,'')}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `
+      <div class="answer-area">
+        <textarea class="answer-box" id="answer-box" placeholder="Type your answer here, or use 'Answer Aloud' to speak it…" rows="5"></textarea>
+        <button class="btn-submit" id="btn-submit" onclick="submitAnswer()">Submit Answer</button>
+      </div>`;
+  }
+  html += `</div>`;
+  html += `<div class="feedback-card" id="feedback-card"></div>`;
+
+  document.getElementById('question-area').innerHTML = html;
+  updateVoiceDot('idle');
+}
+
+// ─────────────────────────────────────────────────────────────
+// MCQ INTERACTION
+// ─────────────────────────────────────────────────────────────
+function selectMCQ(idx) {
+  const q = currentQuestions[currentQIndex];
+  const letters = ['A','B','C','D'];
+  const chosen = letters[idx];
+
+  document.querySelectorAll('.mcq-option').forEach(el => el.style.pointerEvents = 'none');
+  document.getElementById(`opt-${idx}`).classList.add('selected');
+
+  const correctIdx = letters.indexOf(q.answer);
+  
+  setTimeout(() => {
+    if (chosen === q.answer) {
+      document.getElementById(`opt-${idx}`).classList.remove('selected');
+      document.getElementById(`opt-${idx}`).classList.add('correct');
+      sessionScore++;
+      document.getElementById('ps-score').textContent = sessionScore;
+    } else {
+      document.getElementById(`opt-${idx}`).classList.remove('selected');
+      document.getElementById(`opt-${idx}`).classList.add('wrong');
+      document.getElementById(`opt-${correctIdx}`).classList.add('correct');
+    }
+    sessionTotal++;
+    showMCQFeedback(chosen === q.answer, q);
+  }, 400);
+}
+
+function showMCQFeedback(correct, q) {
+  const fc = document.getElementById('feedback-card');
+  const scoreClass = correct ? 'high' : 'low';
+  const icon = correct ? '✓' : '✗';
+  const title = correct ? 'Correct!' : 'Not quite';
+  
+  fc.innerHTML = `
+    <div class="feedback-header">
+      <div class="feedback-score ${scoreClass}">${icon}</div>
+      <div>
+        <div class="feedback-title">${title}</div>
+        <div style="font-size:0.8rem;color:var(--text-muted)">The correct answer is ${q.answer}</div>
+      </div>
+    </div>
+    <div class="feedback-text">${q.explanation}</div>
+    <button class="btn-next" onclick="nextQuestion()">Next Question →</button>
+  `;
+  fc.classList.add('show');
+
+  if (window.speechSynthesis) {
+    const text = `${correct ? 'Correct!' : 'Not quite. The correct answer is ' + q.answer + '.'} ${q.explanation}`;
+    speakText(text);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// STRUCTURED ANSWER + AI MARKING
+// ─────────────────────────────────────────────────────────────
+async function submitAnswer() {
+  const box = document.getElementById('answer-box');
+  const answer = box?.value.trim();
+  if (!answer) { box.style.borderColor = 'var(--accent-red)'; return; }
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Marking…';
+
+  const q = currentQuestions[currentQIndex];
+  await markAnswer(answer, q);
+}
+
+async function markAnswer(studentAnswer, q) {
+  const prompt = `You are a Cambridge IGCSE ${currentSubject} examiner. Mark this student answer.
+
+Question: ${q.q}
+Total marks: ${q.marks}
+Mark scheme points: ${JSON.stringify(q.mark_scheme)}
+Model answer: ${q.model_answer}
+
+Student answer: ${studentAnswer}
+
+Award marks strictly based on the mark scheme. Return only JSON (no markdown):
+{
+  "marks_awarded": <number 0 to ${q.marks}>,
+  "feedback": "2-3 sentences of specific examiner feedback",
+  "improvements": "1-2 specific things the student should add or correct",
+  "key_points_hit": ["list of mark scheme points the student got correct"]
+}`;
+
+  let result;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: 'You are a Cambridge IGCSE examiner. Return only valid JSON. No markdown fences.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let raw = data.content.map(c => c.text || '').join('').replace(/```json|```/g,'').trim();
+    result = JSON.parse(raw);
+  } catch(e) {
+    result = {
+      marks_awarded: Math.round(q.marks * 0.5),
+      feedback: "Your answer shows some understanding. Review the mark scheme for the key points required.",
+      improvements: "Make sure you include specific scientific terminology and address each mark point clearly.",
+      key_points_hit: []
+    };
+  }
+
+  const awarded = result.marks_awarded;
+  const ratio = awarded / q.marks;
+  sessionScore += awarded;
+  sessionTotal += q.marks;
+  document.getElementById('ps-score').textContent = sessionScore;
+
+  const scoreClass = ratio >= 0.75 ? 'high' : ratio >= 0.5 ? 'mid' : 'low';
+  const fc = document.getElementById('feedback-card');
+  fc.innerHTML = `
+    <div class="feedback-header">
+      <div class="feedback-score ${scoreClass}">${awarded}/${q.marks}</div>
+      <div>
+        <div class="feedback-title">${ratio >= 0.75 ? 'Excellent work!' : ratio >= 0.5 ? 'Good attempt' : 'Needs improvement'}</div>
+        <div style="font-size:0.8rem;color:var(--text-muted)">${awarded} of ${q.marks} marks awarded</div>
+      </div>
+    </div>
+    <div class="feedback-text">${result.feedback}
+
+${result.improvements ? '💡 <strong>To improve:</strong> ' + result.improvements : ''}</div>
+    ${result.key_points_hit?.length ? `<div style="margin-top:0.8rem;font-size:0.82rem;color:var(--accent-chem)">✓ Points earned: ${result.key_points_hit.join(' · ')}</div>` : ''}
+    <div class="model-answer">
+      <div class="model-answer-label">Model Answer</div>
+      <div class="model-answer-text">${q.model_answer}</div>
+    </div>
+    <button class="btn-next" onclick="nextQuestion()">Next Question →</button>
+  `;
+  fc.classList.add('show');
+  fc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const feedbackText = `You scored ${awarded} out of ${q.marks}. ${result.feedback}`;
+  speakText(feedbackText);
+}
+
+// ─────────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────────
+function nextQuestion() {
+  currentQIndex++;
+  stopAll();
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('practice-screen').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showSummary() {
+  document.getElementById('question-area').innerHTML = '';
+  document.getElementById('progress-bar').style.width = '100%';
+  const pct = sessionTotal > 0 ? Math.round((sessionScore / sessionTotal) * 100) : Math.round((sessionScore / currentQuestions.length) * 100);
+  const summary = document.getElementById('score-summary');
+  document.getElementById('final-score-big').textContent = `${sessionScore}/${sessionTotal || currentQuestions.length}`;
+  document.getElementById('final-score-msg').textContent = pct >= 80 ? '🏆 Outstanding! Cambridge exam-ready.' : pct >= 60 ? '✅ Good work — review the topics you missed.' : '📚 Keep practising — you\'ll get there!';
+  summary.classList.add('show');
+  speakText(`Session complete! You scored ${sessionScore} out of ${sessionTotal || currentQuestions.length}. ${pct >= 80 ? 'Outstanding work!' : pct >= 60 ? 'Good attempt, keep practising.' : 'Keep studying, you are improving!'}`);
+}
+
+function restartSession() {
+  document.getElementById('score-summary').classList.remove('show');
+  exitPractice();
+  setTimeout(() => openSubject(currentSubject), 300);
+}
+
+function exitPractice() {
+  stopAll();
+  document.getElementById('practice-screen').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────────────────────
+// VOICE: TEXT-TO-SPEECH
+// ─────────────────────────────────────────────────────────────
+function speakText(text) {
+  if (!synth) return;
+  synth.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 0.92;
+  utter.pitch = 1.0;
+  utter.volume = 1.0;
+  
+  // Prefer a clear English voice
+  const voices = synth.getVoices();
+  const preferred = voices.find(v => v.lang === 'en-GB' && v.name.toLowerCase().includes('daniel')) ||
+                    voices.find(v => v.lang === 'en-GB') ||
+                    voices.find(v => v.lang.startsWith('en'));
+  if (preferred) utter.voice = preferred;
+
+  utter.onstart = () => { isSpeaking = true; updateVoiceDot('speaking'); };
+  utter.onend = () => { isSpeaking = false; updateVoiceDot('idle'); };
+  utter.onerror = () => { isSpeaking = false; updateVoiceDot('idle'); };
+  synth.speak(utter);
+}
+
+function readQuestion() {
+  const q = currentQuestions[currentQIndex];
+  if (!q) return;
+  synth?.cancel();
+  let textToRead = `Question ${currentQIndex + 1}. ${q.q}`;
+  if (q.options) {
+    textToRead += '. Options: ' + q.options.map(o => o.replace(/^[ABCD]\.\s*/,'')).map((o,i) => ['A','B','C','D'][i] + '. ' + o).join('. ');
+  } else {
+    textToRead += `. This question is worth ${q.marks} marks.`;
+  }
+  speakText(textToRead);
+}
+
+// ─────────────────────────────────────────────────────────────
+// VOICE: SPEECH RECOGNITION
+// ─────────────────────────────────────────────────────────────
+function startListening() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert('Speech recognition is not supported in your browser. Try Chrome.');
+    return;
+  }
+  if (isListening) return;
+
+  synth?.cancel();
+  isSpeaking = false;
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-GB';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    isListening = true;
+    updateVoiceDot('listening');
+    document.getElementById('voice-label').textContent = 'Listening… speak your answer';
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    const display = final || interim;
+    document.getElementById('transcript-text').textContent = display;
+    document.getElementById('voice-transcript').classList.add('show');
+
+    if (final) {
+      const box = document.getElementById('answer-box');
+      if (box) {
+        box.value = (box.value ? box.value + ' ' : '') + final;
+        box.classList.add('voice-filled');
+      } else {
+        // MCQ — try to match spoken letter
+        const letter = final.trim().toUpperCase().charAt(0);
+        if (['A','B','C','D'].includes(letter)) {
+          const idx = ['A','B','C','D'].indexOf(letter);
+          selectMCQ(idx);
+        }
+      }
+    }
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    updateVoiceDot('idle');
+    document.getElementById('voice-label').textContent = 'Voice ready';
+  };
+
+  recognition.onerror = (e) => {
+    isListening = false;
+    updateVoiceDot('idle');
+    document.getElementById('voice-label').textContent = `Error: ${e.error}`;
+  };
+
+  recognition.start();
+}
+
+function stopAll() {
+  if (synth) { synth.cancel(); isSpeaking = false; }
+  if (recognition && isListening) { recognition.stop(); isListening = false; }
+  updateVoiceDot('idle');
+  document.getElementById('voice-label').textContent = 'Voice ready';
+}
+
+function updateVoiceDot(state) {
+  const dot = document.getElementById('voice-dot');
+  const label = document.getElementById('voice-label');
+  if (!dot) return;
+  dot.className = 'voice-dot';
+  if (state === 'listening') { dot.classList.add('listening'); label.textContent = 'Listening…'; }
+  else if (state === 'speaking') { dot.classList.add('speaking'); label.textContent = 'Reading question…'; }
+  else { label.textContent = 'Voice ready'; }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Preload voices
+// ─────────────────────────────────────────────────────────────
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+}
+</script>
+</body>
+</html>

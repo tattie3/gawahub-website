@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us — Tats Learning Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=Fredoka+One&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --chem: #00ffc8;
+      --phys: #ffcc00;
+      --accent: #ff4d7d;
+      --deep: #060612;
+      --mid: #0d0d22;
+      --sky: #0a0a1f;
+      --white: #eef2ff;
+      --card-bg: rgba(255,255,255,0.04);
+      --radius: 20px;
+      --glow-chem: 0 0 40px rgba(0,255,200,0.3);
+      --glow-phys: 0 0 40px rgba(255,204,0,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--deep);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       3D HERO CANVAS
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       NAV
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5vw;
+      height: 68px;
+      background: rgba(6,6,18,0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,255,200,0.12);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--chem), var(--phys));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: rgba(238,242,255,0.6);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--chem); }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       HERO
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 5vw 80px;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,255,200,0.08);
+      border: 1px solid rgba(0,255,200,0.3);
+      border-radius: 50px;
+      padding: 8px 24px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--chem);
+      margin-bottom: 32px;
+      animation: fade-in 1s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--chem);
+      animation: blink 1.5s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -2px;
+      margin-bottom: 28px;
+      animation: slide-up 1s ease both 0.2s;
+    }
+    .hero-title .line1 { display: block; color: var(--white); }
+    .hero-title .line2 {
+      display: block;
+      background: linear-gradient(90deg, var(--chem) 0%, var(--phys) 50%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% auto;
+      animation: slide-up 1s ease both 0.2s, gradient-flow 3s ease infinite 1.2s;
+    }
+    @keyframes gradient-flow {
+      0%,100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+
+    .hero-subtitle {
+      max-width: 600px;
+      font-size: 1.15rem;
+      line-height: 1.75;
+      color: rgba(238,242,255,0.65);
+      margin-bottom: 48px;
+      animation: slide-up 1s ease both 0.4s;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: slide-up 1s ease both 0.5s;
+    }
+
+    .btn {
+      padding: 15px 36px;
+      border-radius: 50px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.25s, box-shadow 0.25s;
+      display: inline-block;
+    }
+    .btn:hover { transform: translateY(-4px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--chem), #00a388);
+      color: #060612;
+      box-shadow: 0 0 30px rgba(0,255,200,0.3);
+    }
+    .btn-primary:hover { box-shadow: 0 0 50px rgba(0,255,200,0.5); }
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid rgba(255,204,0,0.5);
+      color: var(--phys);
+    }
+    .btn-secondary:hover { border-color: var(--phys); box-shadow: 0 0 30px rgba(255,204,0,0.2); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+    .scroll-mouse {
+      width: 24px; height: 40px;
+      border: 2px solid rgba(0,255,200,0.4);
+      border-radius: 12px;
+      position: relative;
+    }
+    .scroll-mouse::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 4px; height: 8px;
+      background: var(--chem);
+      border-radius: 2px;
+      animation: scroll-dot 2s ease infinite;
+    }
+    @keyframes scroll-dot { 0%,100%{top:6px;opacity:1;} 80%{top:22px;opacity:0;} }
+    .scroll-label {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(0,255,200,0.4);
+    }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       SHARED SECTION STYLES
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    section { padding: 100px 5vw; position: relative; }
+    .section-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--chem);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px; height: 2px;
+      background: var(--chem);
+      border-radius: 2px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: rgba(238,242,255,0.62);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       3D ATOM SECTION
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .atom-section {
+      background: var(--mid);
+      overflow: hidden;
+    }
+    #atom-canvas-wrap {
+      width: 100%;
+      height: 420px;
+      position: relative;
+      margin-top: 60px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,200,0.1);
+    }
+    #atom-canvas { width: 100%; height: 100%; display: block; }
+    .atom-label {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(0,255,200,0.5);
+      pointer-events: none;
+    }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       MISSION
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .mission {
+      background: var(--sky);
+    }
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-top: 60px;
+    }
+    .mission-text p {
+      font-size: 1.05rem;
+      color: rgba(238,242,255,0.7);
+      line-height: 1.85;
+      margin-bottom: 20px;
+    }
+    .mission-text strong { color: var(--chem); }
+    .mission-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 44px;
+    }
+    .stat-chip {
+      background: rgba(0,255,200,0.04);
+      border: 1px solid rgba(0,255,200,0.15);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .stat-chip:hover {
+      transform: translateY(-5px);
+      border-color: var(--chem);
+      box-shadow: var(--glow-chem);
+    }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--phys);
+    }
+    .stat-label { font-size: 0.8rem; color: rgba(238,242,255,0.5); margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* 3D SPINNING MOLECULE visual */
+    .mission-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #mol-canvas { width: 380px; height: 380px; border-radius: 50%; }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       SUBJECTS
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .subjects { background: var(--deep); }
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      margin-top: 60px;
+    }
+    .subject-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 24px;
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s;
+      cursor: default;
+      transform-style: preserve-3d;
+    }
+    .subject-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 24px 24px 0 0;
+    }
+    .subject-card.chem::before { background: linear-gradient(90deg, var(--chem), #00ffa3); }
+    .subject-card.phys::before { background: linear-gradient(90deg, var(--phys), var(--accent)); }
+    .subject-card.both::before { background: linear-gradient(90deg, var(--chem), var(--phys), var(--accent)); }
+    .subject-card:hover { transform: translateY(-8px) rotateX(2deg); }
+    .subject-card.chem:hover { border-color: rgba(0,255,200,0.3); box-shadow: var(--glow-chem); }
+    .subject-card.phys:hover { border-color: rgba(255,204,0,0.3); box-shadow: var(--glow-phys); }
+    .subject-card.both:hover { border-color: rgba(255,77,125,0.3); box-shadow: 0 0 40px rgba(255,77,125,0.2); }
+
+    /* card shimmer */
+    .subject-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      border-radius: 24px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .subject-card:hover::after { opacity: 1; }
+
+    .card-icon-wrap {
+      width: 60px; height: 60px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 22px;
+    }
+    .chem .card-icon-wrap { background: rgba(0,255,200,0.1); }
+    .phys .card-icon-wrap { background: rgba(255,204,0,0.1); }
+    .both .card-icon-wrap { background: rgba(255,77,125,0.1); }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .card-text { font-size: 0.95rem; line-height: 1.75; color: rgba(238,242,255,0.62); margin-bottom: 22px; }
+    .card-topics { display: flex; flex-wrap: wrap; gap: 8px; }
+    .topic-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(238,242,255,0.7);
+      letter-spacing: 0.3px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .chem:hover .topic-pill { background: rgba(0,255,200,0.08); border-color: rgba(0,255,200,0.2); color: var(--chem); }
+    .phys:hover .topic-pill { background: rgba(255,204,0,0.08); border-color: rgba(255,204,0,0.2); color: var(--phys); }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       3D WAVE SEPARATOR
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .wave-section {
+      padding: 0;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+    #wave-canvas { width: 100%; height: 100%; display: block; }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       VALUES
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .values { background: var(--mid); }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 60px;
+    }
+    .value-card {
+      padding: 32px 28px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.025);
+      transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .value-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(0,255,200,0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-chem);
+    }
+    .value-card:nth-child(2n):hover { border-color: rgba(255,204,0,0.25); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-phys); }
+    .value-card:nth-child(3n):hover { border-color: rgba(255,77,125,0.25); }
+
+    .value-icon-wrap {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .value-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .value-text { font-size: 0.88rem; color: rgba(238,242,255,0.58); line-height: 1.65; }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       FACTS
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .fun-facts {
+      background: var(--sky);
+      border-top: 1px solid rgba(0,255,200,0.08);
+      border-bottom: 1px solid rgba(0,255,200,0.08);
+    }
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-top: 60px;
+    }
+    .fact-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.35s, background 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .fact-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,255,200,0.06) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .fact-card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .fact-card:hover::before { opacity: 1; }
+    .fact-emoji {
+      font-size: 2.8rem;
+      margin-bottom: 16px;
+      display: block;
+      animation: fact-bounce 3s ease infinite;
+    }
+    .fact-card:nth-child(2) .fact-emoji { animation-delay: 0.5s; }
+    .fact-card:nth-child(3) .fact-emoji { animation-delay: 1s; }
+    .fact-card:nth-child(4) .fact-emoji { animation-delay: 1.5s; }
+    .fact-card:nth-child(5) .fact-emoji { animation-delay: 2s; }
+    .fact-card:nth-child(6) .fact-emoji { animation-delay: 2.5s; }
+    @keyframes fact-bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+    .fact-text { font-size: 0.93rem; line-height: 1.65; color: rgba(238,242,255,0.72); }
+    .fact-text strong { color: var(--phys); }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       PROMISE
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .promise { text-align: center; background: var(--deep); }
+    .promise-box {
+      max-width: 800px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(0,255,200,0.06), rgba(255,204,0,0.04));
+      border: 1px solid rgba(0,255,200,0.18);
+      border-radius: 32px;
+      padding: 70px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .promise-box::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: -100px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,200,0.08) 0%, transparent 70%);
+      animation: blob-drift 8s ease-in-out infinite alternate;
+    }
+    .promise-box::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 250px; height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,204,0,0.07) 0%, transparent 70%);
+      animation: blob-drift 10s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes blob-drift { 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(30px,20px) scale(1.15);} }
+    .promise-icon { font-size: 3.5rem; margin-bottom: 24px; display: block; animation: pulse-scale 3s ease infinite; }
+    @keyframes pulse-scale { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+    .promise-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--chem), var(--phys));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+    .promise-text {
+      font-size: 1.05rem;
+      color: rgba(238,242,255,0.7);
+      line-height: 1.85;
+      margin-bottom: 36px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 1;
+    }
+    .promise-text em { color: var(--chem); font-style: normal; }
+    .promise-cta { position: relative; z-index: 1; }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       FOOTER
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    footer {
+      background: rgba(0,0,0,0.4);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      padding: 40px 5vw;
+      font-size: 0.88rem;
+      color: rgba(238,242,255,0.35);
+    }
+    footer strong { color: var(--chem); }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       SCROLL REVEAL
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       ANIMATIONS
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    @keyframes fade-in { from{opacity:0;} to{opacity:1;} }
+    @keyframes slide-up { from{opacity:0;transform:translateY(35px);} to{opacity:1;transform:translateY(0);} }
+
+    /* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+       RESPONSIVE
+    &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+    @media (max-width: 900px) {
+      .mission-grid { grid-template-columns: 1fr; }
+      #mol-canvas { width: 280px; height: 280px; }
+      nav .nav-links { display: none; }
+      .promise-box { padding: 40px 24px; }
+    }
+    @media (max-width: 600px) {
+      .hero-title { letter-spacing: -1px; }
+      section { padding: 70px 5vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">&#9879;&#65039; Tats Learning Hub</div>
+  <ul class="nav-links">
+    <li><a href="the%20gawa%20%20school%20hub.html">Home</a></li>
+    <li><a href="#" class="active">About</a></li>
+    <li><a href="the%20chemistry%20.html">Chemistry</a></li>
+    <li><a href="phsics.html">Physics</a></li>
+    <li><a href="#">Resources</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     HERO — Three.js particle field
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      About Us
+    </div>
+    <h1 class="hero-title">
+      <span class="line1">Where Science</span>
+      <span class="line2">Comes Alive &#128640;</span>
+    </h1>
+    <p class="hero-subtitle">
+      Tats Learning Hub is a student-first science space built to make Chemistry and Physics
+      genuinely exciting, understandable, and accessible for <em>every</em> learner.
+    </p>
+    <div class="hero-cta">
+      <a href="#mission" class="btn btn-primary">Our Mission</a>
+      <a href="#subjects" class="btn btn-secondary">Explore Subjects</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-mouse"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     3D ATOM SHOWCASE
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="atom-section">
+  <div class="section-eyebrow">Interactive 3D</div>
+  <h2 class="section-title">Science in Three Dimensions</h2>
+  <p class="section-desc">Rotate & explore — this is the kind of science we want you to experience. Real. Immersive. Mind-blowing.</p>
+  <div id="atom-canvas-wrap">
+    <canvas id="atom-canvas"></canvas>
+    <div class="atom-label">&#11014; Drag to rotate · Real-time 3D atom simulation</div>
+  </div>
+</section>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     MISSION
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="mission" id="mission">
+  <div class="section-eyebrow">Why We Exist</div>
+  <h2 class="section-title">Our Mission & Story</h2>
+
+  <div class="mission-grid">
+    <div class="mission-text reveal">
+      <p><strong>Tats Learning Hub was born from one simple belief:</strong> every student deserves a science teacher who never gives up on them.</p>
+      <p>Too many kids leave school thinking they're "just not science people." We refuse to accept that. Science isn't a talent — it's a skill. And skills are built through curiosity, practice, and the right guidance.</p>
+      <p>Whether you're balancing your first chemical equation or wrapping your head around Newton's laws — this is your safe space to ask questions, make mistakes, and grow into a confident scientific thinker.</p>
+
+      <div class="mission-stats">
+        <div class="stat-chip reveal">
+          <div class="stat-num">500+</div>
+          <div class="stat-label">Students Helped</div>
+        </div>
+        <div class="stat-chip reveal">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Core Subjects</div>
+        </div>
+        <div class="stat-chip reveal">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Free Resources</div>
+        </div>
+        <div class="stat-chip reveal">
+          <div class="stat-num">&#8734;</div>
+          <div class="stat-label">Curiosity Welcome</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission-visual reveal">
+      <canvas id="mol-canvas"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     SUBJECTS
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="subjects" id="subjects">
+  <div class="section-eyebrow">What We Teach</div>
+  <h2 class="section-title">Our Core Subjects</h2>
+  <p class="section-desc">Carefully structured learning paths built around the way students actually think.</p>
+
+  <div class="subjects-grid">
+    <div class="subject-card chem reveal">
+      <div class="card-icon-wrap">&#9879;&#65039;</div>
+      <h3 class="card-title">Chemistry</h3>
+      <p class="card-text">From the tiny atom to complex organic molecules, we break chemistry into clear, logical steps. No memorising formulas blindly — we explain the <em>why</em> behind every reaction.</p>
+      <div class="card-topics">
+        <span class="topic-pill">Atomic Structure</span>
+        <span class="topic-pill">Periodic Table</span>
+        <span class="topic-pill">Chemical Bonding</span>
+        <span class="topic-pill">Stoichiometry</span>
+        <span class="topic-pill">Acids & Bases</span>
+        <span class="topic-pill">Organic Chemistry</span>
+        <span class="topic-pill">Electrochemistry</span>
+      </div>
+    </div>
+
+    <div class="subject-card phys reveal">
+      <div class="card-icon-wrap">&#9889;</div>
+      <h3 class="card-title">Physics</h3>
+      <p class="card-text">Physics is the language the universe speaks. We translate it into plain English (and diagrams!) so you can confidently tackle mechanics, electricity, waves, and beyond.</p>
+      <div class="card-topics">
+        <span class="topic-pill">Kinematics</span>
+        <span class="topic-pill">Newton's Laws</span>
+        <span class="topic-pill">Energy & Work</span>
+        <span class="topic-pill">Waves & Sound</span>
+        <span class="topic-pill">Electricity</span>
+        <span class="topic-pill">Magnetism</span>
+        <span class="topic-pill">Modern Physics</span>
+      </div>
+    </div>
+
+    <div class="subject-card both reveal">
+      <div class="card-icon-wrap">&#127757;</div>
+      <h3 class="card-title">Real-World Science</h3>
+      <p class="card-text">We connect what you learn to the world around you — rockets, medicine, cooking, climate change, and more. Science is everywhere, and we make sure you see it.</p>
+      <div class="card-topics">
+        <span class="topic-pill">Science in Daily Life</span>
+        <span class="topic-pill">Environmental Science</span>
+        <span class="topic-pill">STEM Careers</span>
+        <span class="topic-pill">Practical Experiments</span>
+        <span class="topic-pill">Problem Solving</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     3D WAVE SEPARATOR
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<div class="wave-section">
+  <canvas id="wave-canvas"></canvas>
+</div>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     VALUES
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="values">
+  <div class="section-eyebrow">What We Stand For</div>
+  <h2 class="section-title">Our Learning Values</h2>
+  <p class="section-desc">These principles guide everything we do — from how we explain a concept to how we support a struggling student.</p>
+
+  <div class="values-grid">
+    <div class="value-card reveal">
+      <span class="value-icon-wrap">&#129300;</span>
+      <div class="value-name">Curiosity First</div>
+      <p class="value-text">No question is too small or too silly. We celebrate wondering, questioning, and the joy of not knowing yet.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon-wrap">&#128170;</span>
+      <div class="value-name">Growth Mindset</div>
+      <p class="value-text">We believe every student can improve. Mistakes are part of the process — not a sign that you can't do it.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon-wrap">&#128269;</span>
+      <div class="value-name">Depth Over Speed</div>
+      <p class="value-text">Understanding beats memorisation every time. We build concepts from the ground up so knowledge actually sticks.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon-wrap">&#129309;</span>
+      <div class="value-name">Inclusive Learning</div>
+      <p class="value-text">Science belongs to everyone — regardless of background, ability, or where you're starting from. We meet you where you are.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon-wrap">&#127793;</span>
+      <div class="value-name">Real-World Impact</div>
+      <p class="value-text">We connect science to the world's biggest challenges so students see the power — and responsibility — that knowledge brings.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon-wrap">&#127881;</span>
+      <div class="value-name">Learning is Fun</div>
+      <p class="value-text">Dry textbooks are the enemy. We use examples, stories, experiments, and humour to keep science enjoyable every step of the way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     FUN FACTS
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="fun-facts">
+  <div class="section-eyebrow">Did You Know?</div>
+  <h2 class="section-title">Cool Science Facts to Inspire You</h2>
+  <p class="section-desc">Science is full of mind-blowing discoveries. Here's a taste of what awaits you!</p>
+
+  <div class="facts-grid">
+    <div class="fact-card reveal">
+      <span class="fact-emoji">&#9883;&#65039;</span>
+      <p class="fact-text">A single teaspoon of a <strong>neutron star</strong> would weigh about a billion tonnes on Earth. Density makes physics wild!</p>
+    </div>
+    <div class="fact-card reveal">
+      <span class="fact-emoji">&#129514;</span>
+      <p class="fact-text">The human body contains enough <strong>carbon</strong> to fill about 9,000 pencils. You are literally made of chemistry!</p>
+    </div>
+    <div class="fact-card reveal">
+      <span class="fact-emoji">&#128168;</span>
+      <p class="fact-text">Sound travels <strong>4× faster</strong> through water than through air. Physics is full of surprises!</p>
+    </div>
+    <div class="fact-card reveal">
+      <span class="fact-emoji">&#128293;</span>
+      <p class="fact-text"><strong>Fire</strong> is not a solid, liquid, or gas — it's plasma. There's a whole 4th state of matter around us every day!</p>
+    </div>
+    <div class="fact-card reveal">
+      <span class="fact-emoji">&#127754;</span>
+      <p class="fact-text">Water is one of the only substances that <strong>expands when it freezes</strong> — a quirk that makes life on Earth possible!</p>
+    </div>
+    <div class="fact-card reveal">
+      <span class="fact-emoji">&#9889;</span>
+      <p class="fact-text">Lightning is <strong>5× hotter than the surface of the Sun</strong>. Electricity packs a serious punch!</p>
+    </div>
+  </div>
+</section>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     PROMISE
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<section class="promise">
+  <div class="promise-box reveal">
+    <span class="promise-icon">&#127775;</span>
+    <h2 class="promise-title">Our Promise to Every Student</h2>
+    <p class="promise-text">
+      At Tats Learning Hub, we promise to always explain things clearly, patiently, and with energy.
+      We promise to believe in you even on the days you don't believe in yourself.
+      We promise that science is not just for "smart" kids — it's for <em>every</em> kid who's brave enough to be curious.
+      <br><br>
+      Your journey into Chemistry and Physics starts here. Let's discover something amazing together.
+    </p>
+    <div class="promise-cta">
+      <a class="btn btn-primary" href="more%20of%20about.html" style="font-size: 1.05rem; padding: 16px 44px;">Start Learning Today &#8594;</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>© 2025 <strong>Tats Learning Hub</strong> · Making Chemistry & Physics Accessible for Every Student · Built with &#10084;&#65039; for learners everywhere</p>
+</footer>
+
+<!-- &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+     SCRIPTS — Three.js 3D Animations
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; -->
+<script>
+/* &#9472;&#9472;&#9472; SHARED UTILS &#9472;&#9472;&#9472; */
+function resizeCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  return dpr;
+}
+
+/* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+   1. HERO — Three.js floating particle field
+   &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+(function initHero() {
+  const canvas = document.getElementById('hero-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  function setSize() {
+    const w = canvas.parentElement.clientWidth;
+    const h = canvas.parentElement.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+  camera.position.z = 30;
+
+  // Particle system
+  const N = 900;
+  const positions = new Float32Array(N * 3);
+  const colors = new Float32Array(N * 3);
+  const velocities = [];
+  const palette = [
+    [0, 1, 0.78],    // chem teal
+    [1, 0.8, 0],     // phys yellow
+    [1, 0.3, 0.49],  // accent pink
+    [0.5, 0.5, 1],   // soft blue
+  ];
+
+  for (let i = 0; i < N; i++) {
+    positions[i*3]   = (Math.random() - 0.5) * 80;
+    positions[i*3+1] = (Math.random() - 0.5) * 50;
+    positions[i*3+2] = (Math.random() - 0.5) * 40;
+    const c = palette[Math.floor(Math.random() * palette.length)];
+    colors[i*3] = c[0]; colors[i*3+1] = c[1]; colors[i*3+2] = c[2];
+    velocities.push(
+      (Math.random() - 0.5) * 0.02,
+      (Math.random() - 0.5) * 0.02,
+      (Math.random() - 0.5) * 0.01
+    );
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const mat = new THREE.PointsMaterial({ size: 0.22, vertexColors: true, transparent: true, opacity: 0.75 });
+  const pts = new THREE.Points(geo, mat);
+  scene.add(pts);
+
+  // Connection lines
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x00ffc8, transparent: true, opacity: 0.06 });
+  const lineGeo = new THREE.BufferGeometry();
+  const linePos = [];
+  for (let i = 0; i < 200; i++) {
+    const a = Math.floor(Math.random() * N);
+    const b = Math.floor(Math.random() * N);
+    linePos.push(positions[a*3], positions[a*3+1], positions[a*3+2]);
+    linePos.push(positions[b*3], positions[b*3+1], positions[b*3+2]);
+  }
+  lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
+  scene.add(new THREE.LineSegments(lineGeo, lineMat));
+
+  // Mouse parallax
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.003;
+
+    // drift particles
+    const pos = geo.attributes.position.array;
+    for (let i = 0; i < N; i++) {
+      pos[i*3]   += velocities[i*3];
+      pos[i*3+1] += velocities[i*3+1];
+      pos[i*3+2] += velocities[i*3+2];
+      if (Math.abs(pos[i*3])   > 42) velocities[i*3]   *= -1;
+      if (Math.abs(pos[i*3+1]) > 27) velocities[i*3+1] *= -1;
+      if (Math.abs(pos[i*3+2]) > 22) velocities[i*3+2] *= -1;
+    }
+    geo.attributes.position.needsUpdate = true;
+
+    pts.rotation.y = t * 0.05 + mx * 0.08;
+    pts.rotation.x = my * 0.05;
+
+    renderer.render(scene, camera);
+  }
+
+  setSize();
+  window.addEventListener('resize', setSize);
+  animate();
+})();
+
+/* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+   2. ATOM CANVAS — Interactive 3D atom with orbits
+   &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+(function initAtom() {
+  const canvas = document.getElementById('atom-canvas');
+  const wrap = document.getElementById('atom-canvas-wrap');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+  camera.position.set(0, 0, 12);
+
+  // Lighting
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const pLight1 = new THREE.PointLight(0x00ffc8, 3, 50);
+  pLight1.position.set(5, 5, 5);
+  scene.add(pLight1);
+  const pLight2 = new THREE.PointLight(0xffcc00, 2, 50);
+  pLight2.position.set(-5, -4, 3);
+  scene.add(pLight2);
+
+  // Nucleus
+  const nucleusGeo = new THREE.SphereGeometry(0.9, 32, 32);
+  const nucleusMat = new THREE.MeshPhongMaterial({ color: 0x00ffc8, emissive: 0x003322, shininess: 120 });
+  const nucleus = new THREE.Mesh(nucleusGeo, nucleusMat);
+  scene.add(nucleus);
+
+  // Glow sphere around nucleus
+  const glowGeo = new THREE.SphereGeometry(1.2, 24, 24);
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0x00ffc8, transparent: true, opacity: 0.08, side: THREE.BackSide });
+  scene.add(new THREE.Mesh(glowGeo, glowMat));
+
+  // Orbit rings + electrons
+  const orbitData = [
+    { radius: 3.0, tilt: 0,    speed: 1.0, color: 0x00ffc8, electronColor: 0x00ffc8 },
+    { radius: 4.5, tilt: 60,   speed: 0.7, color: 0xffcc00, electronColor: 0xffcc00 },
+    { radius: 5.8, tilt: -40,  speed: 0.45, color: 0xff4d7d, electronColor: 0xff4d7d },
+    { radius: 2.1, tilt: 90,   speed: 1.4, color: 0x7a88ff, electronColor: 0x7a88ff },
+  ];
+
+  const orbits = orbitData.map(o => {
+    // Ring
+    const ringGeo = new THREE.TorusGeometry(o.radius, 0.03, 8, 80);
+    const ringMat = new THREE.MeshBasicMaterial({ color: o.color, transparent: true, opacity: 0.35 });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = THREE.MathUtils.degToRad(o.tilt);
+    scene.add(ring);
+
+    // Electron
+    const eGeo = new THREE.SphereGeometry(0.18, 12, 12);
+    const eMat = new THREE.MeshPhongMaterial({ color: o.electronColor, emissive: o.electronColor, emissiveIntensity: 0.6, shininess: 200 });
+    const electron = new THREE.Mesh(eGeo, eMat);
+
+    // Electron glow
+    const egGeo = new THREE.SphereGeometry(0.32, 12, 12);
+    const egMat = new THREE.MeshBasicMaterial({ color: o.electronColor, transparent: true, opacity: 0.2, side: THREE.BackSide });
+    electron.add(new THREE.Mesh(egGeo, egMat));
+
+    scene.add(electron);
+    return { ring, electron, ...o, angle: Math.random() * Math.PI * 2 };
+  });
+
+  // Floating nuclear protons/neutrons inside nucleus
+  for (let i = 0; i < 6; i++) {
+    const sGeo = new THREE.SphereGeometry(0.25, 8, 8);
+    const sMat = new THREE.MeshPhongMaterial({
+      color: i % 2 === 0 ? 0xff4d7d : 0x888888,
+      emissive: i % 2 === 0 ? 0x330011 : 0x111111,
+      shininess: 80
+    });
+    const s = new THREE.Mesh(sGeo, sMat);
+    const phi = Math.acos(-1 + (2*i)/5);
+    const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+    s.position.setFromSphericalCoords(0.55, phi, theta);
+    nucleus.add(s);
+  }
+
+  // Drag interaction
+  let isDragging = false, lastX = 0, lastY = 0;
+  let rotX = 0, rotY = 0, velX = 0, velY = 0;
+  canvas.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
+  window.addEventListener('mouseup', () => isDragging = false);
+  canvas.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    velX = (e.clientX - lastX) * 0.01;
+    velY = (e.clientY - lastY) * 0.01;
+    lastX = e.clientX; lastY = e.clientY;
+  });
+  canvas.addEventListener('touchstart', e => { isDragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; });
+  canvas.addEventListener('touchend', () => isDragging = false);
+  canvas.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    velX = (e.touches[0].clientX - lastX) * 0.01;
+    velY = (e.touches[0].clientY - lastY) * 0.01;
+    lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+  });
+
+  function setSize() {
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.016;
+
+    // Auto-rotate + inertia
+    if (!isDragging) { velX *= 0.96; velY *= 0.96; }
+    rotY += velX; rotX += velY;
+    if (!isDragging && Math.abs(velX) < 0.001 && Math.abs(velY) < 0.001) {
+      rotY += 0.004;
+    }
+    nucleus.rotation.y = rotY;
+    nucleus.rotation.x = rotX;
+
+    // Orbit electrons
+    orbits.forEach(o => {
+      o.angle += o.speed * 0.016;
+      const x = Math.cos(o.angle) * o.radius;
+      const z = Math.sin(o.angle) * o.radius;
+      const tRad = THREE.MathUtils.degToRad(o.tilt);
+      o.electron.position.set(
+        x,
+        Math.sin(o.angle) * o.radius * Math.sin(tRad),
+        z * Math.cos(tRad)
+      );
+      o.ring.rotation.x = tRad + rotX * 0.3;
+      o.ring.rotation.y = rotY * 0.3;
+    });
+
+    // Nucleus pulse
+    const s = 1 + 0.03 * Math.sin(t * 2);
+    nucleus.scale.setScalar(s);
+    pLight1.position.x = Math.sin(t * 0.5) * 6;
+    pLight1.position.y = Math.cos(t * 0.4) * 5;
+
+    renderer.render(scene, camera);
+  }
+
+  setSize();
+  window.addEventListener('resize', setSize);
+  animate();
+})();
+
+/* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+   3. MOLECULE CANVAS — Mission section spinning molecule
+   &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+(function initMolecule() {
+  const canvas = document.getElementById('mol-canvas');
+  if (!canvas) return;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+  camera.position.z = 9;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const l1 = new THREE.PointLight(0x00ffc8, 4, 30); l1.position.set(4, 4, 4); scene.add(l1);
+  const l2 = new THREE.PointLight(0xffcc00, 3, 30); l2.position.set(-4, -3, 2); scene.add(l2);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // Water-like molecule H2O-ish arrangement but stylised
+  const atoms = [
+    { pos: [0, 0, 0],     r: 0.7, color: 0xff4d7d }, // O
+    { pos: [1.6, 0.8, 0], r: 0.4, color: 0xffffff },  // H
+    { pos: [-1.6, 0.8,0], r: 0.4, color: 0xffffff },  // H
+    { pos: [0, -1.8, 0.5],r: 0.55, color: 0x00ffc8 }, // extra
+    { pos: [0.9, 0, -1.6],r: 0.45, color: 0xffcc00 }, // extra
+    { pos: [-0.9,0, -1.6],r: 0.45, color: 0x7a88ff }, // extra
+  ];
+
+  const bonds = [[0,1],[0,2],[0,3],[0,4],[0,5],[3,4],[4,5]];
+
+  atoms.forEach(a => {
+    const geo = new THREE.SphereGeometry(a.r, 20, 20);
+    const mat = new THREE.MeshPhongMaterial({ color: a.color, emissive: a.color, emissiveIntensity: 0.2, shininess: 150 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(...a.pos);
+    group.add(mesh);
+  });
+
+  bonds.forEach(([a, b]) => {
+    const pa = new THREE.Vector3(...atoms[a].pos);
+    const pb = new THREE.Vector3(...atoms[b].pos);
+    const dir = new THREE.Vector3().subVectors(pb, pa);
+    const len = dir.length();
+    const mid = new THREE.Vector3().addVectors(pa, pb).multiplyScalar(0.5);
+    const geo = new THREE.CylinderGeometry(0.06, 0.06, len, 8);
+    const mat = new THREE.MeshPhongMaterial({ color: 0x446688, transparent: true, opacity: 0.55, shininess: 60 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(mid);
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir.normalize());
+    group.add(mesh);
+  });
+
+  function setSize() {
+    const s = canvas.clientWidth;
+    renderer.setSize(s, s);
+    camera.aspect = 1;
+    camera.updateProjectionMatrix();
+  }
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.012;
+    group.rotation.y = t * 0.4;
+    group.rotation.x = Math.sin(t * 0.3) * 0.3;
+    l1.position.x = Math.sin(t * 0.6) * 5;
+    renderer.render(scene, camera);
+  }
+
+  setSize();
+  window.addEventListener('resize', setSize);
+  animate();
+})();
+
+/* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+   4. WAVE CANVAS — animated 3D wave surface
+   &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+(function initWave() {
+  const canvas = document.getElementById('wave-canvas');
+  const wrap = canvas.parentElement;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
+  camera.position.set(0, 8, 18);
+  camera.lookAt(0, 0, 0);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  const dLight = new THREE.DirectionalLight(0x00ffc8, 2);
+  dLight.position.set(5, 10, 5);
+  scene.add(dLight);
+  const dLight2 = new THREE.DirectionalLight(0xffcc00, 1.5);
+  dLight2.position.set(-5, 8, -3);
+  scene.add(dLight2);
+
+  const W = 60, H = 40, SEG = 60;
+  const geo = new THREE.PlaneGeometry(W, H, SEG, SEG);
+  geo.rotateX(-Math.PI / 2);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0x001133,
+    emissive: 0x000a22,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.6
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  // Second overlay
+  const mat2 = new THREE.MeshPhongMaterial({ color: 0x00ffc8, wireframe: true, transparent: true, opacity: 0.12 });
+  const geo2 = new THREE.PlaneGeometry(W, H, SEG, SEG);
+  geo2.rotateX(-Math.PI / 2);
+  const mesh2 = new THREE.Mesh(geo2, mat2);
+  mesh2.position.y = 0.05;
+  scene.add(mesh2);
+
+  function setSize() {
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  const origPos = Float32Array.from(geo.attributes.position.array);
+  const origPos2 = Float32Array.from(geo2.attributes.position.array);
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.018;
+    const pos = geo.attributes.position.array;
+    const pos2 = geo2.attributes.position.array;
+    for (let i = 0; i < pos.length; i += 3) {
+      const x = origPos[i], z = origPos[i+2];
+      pos[i+1] = Math.sin(x * 0.3 + t) * 0.9
+               + Math.cos(z * 0.25 + t * 0.7) * 0.7
+               + Math.sin((x + z) * 0.15 + t * 1.2) * 0.5;
+      pos2[i+1] = Math.sin(x * 0.2 + t * 0.8 + 1) * 1.1
+                + Math.cos(z * 0.3 + t * 0.5) * 0.6;
+    }
+    geo.attributes.position.needsUpdate = true;
+    geo.computeVertexNormals();
+    geo2.attributes.position.needsUpdate = true;
+    geo2.computeVertexNormals();
+    renderer.render(scene, camera);
+  }
+
+  setSize();
+  window.addEventListener('resize', setSize);
+  animate();
+})();
+
+/* &#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;
+   SCROLL REVEAL
+&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552;&#9552; */
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 90);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
